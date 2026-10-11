@@ -1,0 +1,6 @@
+# Clones / artefacts locaux à ne jamais versionner
+repo-clone/
+deploy/
+.vite/
+node_modules/
+*.log
