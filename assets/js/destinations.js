@@ -1,16 +1,67 @@
-const wm = name =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(name)}?width=900`;
+/**
+ * Chemin de base des images selon la page courante.
+ * - index.html / destinations.html : assets/images/...
+ * - services/*.html                : ../assets/images/...
+ */
+const IMG_BASE = window.location.pathname.includes('/services/')
+  ? '../assets/images/destinations/'
+  : 'assets/images/destinations/';
+
+/**
+ * Chemin de base pour les liens de destination.
+ */
+const LINK_BASE = window.location.pathname.includes('/services/')
+  ? '../destination.html'
+  : 'destination.html';
+
+const img = slug => IMG_BASE + slug + '.jpg';
+const href = slug => LINK_BASE + '#destination/' + slug;
 
 export const DESTINATIONS = [
-  { title: "La Mecque", country: "Arabie saoudite", img: wm("The Kaaba during Hajj - edited.jpg") },
-  { title: "Médine", country: "Arabie saoudite", img: wm("Masjid An-Nabawi in Madinah.jpg") },
-  { title: "Istanbul", country: "Turquie", img: wm("Blue Mosque Courtyard Dusk Wikimedia Commons.jpg") },
-  { title: "Dubaï", country: "Émirats arabes unis", img: wm("Skyline-Dubai-2010.jpg") },
-  { title: "Marrakech", country: "Maroc", img: wm("Jemaa el-Fnaa at night - Maroco - Marrakesh.jpg") },
-  { title: "Le Caire", country: "Égypte", img: wm("All Gizah Pyramids.jpg") },
-  { title: "Antalya", country: "Turquie", img: wm("Antalya Clock Tower 02.jpg") },
-  { title: "Paris", country: "France", img: wm("Tour Eiffel Wikimedia Commons.jpg") },
-  { title: "Kuala Lumpur", country: "Malaisie", img: wm("Petronas Panorama II.jpg") },
+  // ── Arabie saoudite ─────────────────────────────────────────────────────
+  { title: "La Mecque",    country: "Arabie saoudite",       img: img("la-mecque"),    href: href("la-mecque")    },
+  { title: "Médine",       country: "Arabie saoudite",       img: img("medine"),       href: href("medine")       },
+  { title: "Djeddah",      country: "Arabie saoudite",       img: img("djeddah"),      href: href("djeddah")      },
+  { title: "Taïf",         country: "Arabie saoudite",       img: img("taif"),         href: href("taif")         },
+  { title: "AlUla",        country: "Arabie saoudite",       img: img("alula"),        href: href("alula")        },
+  { title: "Riyad",        country: "Arabie saoudite",       img: img("riyad"),        href: href("riyad")        },
+  // ── Turquie ──────────────────────────────────────────────────────────────
+  { title: "Istanbul",     country: "Turquie",               img: img("istanbul"),     href: href("istanbul")     },
+  { title: "Antalya",      country: "Turquie",               img: img("antalya"),      href: href("antalya")      },
+  { title: "Cappadoce",    country: "Turquie",               img: img("cappadoce"),    href: href("cappadoce")    },
+  { title: "Trabzon",      country: "Turquie",               img: img("trabzon"),      href: href("trabzon")      },
+  // ── Émirats arabes unis ──────────────────────────────────────────────────
+  { title: "Dubaï",        country: "Émirats arabes unis",   img: img("dubai"),        href: href("dubai")        },
+  { title: "Abu Dhabi",    country: "Émirats arabes unis",   img: img("abu-dhabi"),    href: href("abu-dhabi")    },
+  // ── Qatar ────────────────────────────────────────────────────────────────
+  { title: "Doha",         country: "Qatar",                 img: img("doha"),         href: href("doha")         },
+  // ── Égypte ───────────────────────────────────────────────────────────────
+  { title: "Le Caire",     country: "Égypte",                img: img("le-caire"),     href: href("le-caire")     },
+  { title: "Charm el-Cheikh", country: "Égypte",             img: img("charm-el-cheikh"), href: href("charm-el-cheikh") },
+  { title: "Hurghada",     country: "Égypte",                img: img("hurghada"),     href: href("hurghada")     },
+  // ── Maroc ────────────────────────────────────────────────────────────────
+  { title: "Marrakech",    country: "Maroc",                 img: img("marrakech"),    href: href("marrakech")    },
+  { title: "Casablanca",   country: "Maroc",                 img: img("casablanca"),   href: href("casablanca")   },
+  { title: "Tanger",       country: "Maroc",                 img: img("tanger"),       href: href("tanger")       },
+  { title: "Chefchaouen",  country: "Maroc",                 img: img("chefchaouen"),  href: href("chefchaouen")  },
+  { title: "Agadir",       country: "Maroc",                 img: img("agadir"),       href: href("agadir")       },
+  // ── Europe ───────────────────────────────────────────────────────────────
+  { title: "Paris",        country: "France",                img: img("paris"),        href: href("paris")        },
+  { title: "Rome",         country: "Italie",                img: img("rome"),         href: href("rome")         },
+  { title: "Barcelone",    country: "Espagne",               img: img("barcelone"),    href: href("barcelone")    },
+  { title: "Londres",      country: "Royaume-Uni",           img: img("londres"),      href: href("londres")      },
+  // ── Jordanie ─────────────────────────────────────────────────────────────
+  { title: "Amman",        country: "Jordanie",              img: img("amman"),        href: href("amman")        },
+  { title: "Pétra",        country: "Jordanie",              img: img("petra"),        href: href("petra")        },
+  // ── Asie & Océan Indien ──────────────────────────────────────────────────
+  { title: "Kuala Lumpur", country: "Malaisie",              img: img("kuala-lumpur"), href: href("kuala-lumpur") },
+  { title: "Bali",         country: "Indonésie",             img: img("bali"),         href: href("bali")         },
+  { title: "Maldives",     country: "Maldives",              img: img("maldives"),     href: href("maldives")     },
+  // ── Afrique ──────────────────────────────────────────────────────────────
+  { title: "Zanzibar",     country: "Tanzanie",              img: img("zanzibar"),     href: href("zanzibar")     },
+  { title: "Djerba",       country: "Tunisie",               img: img("djerba"),       href: href("djerba")       },
+  // ── Balkans ──────────────────────────────────────────────────────────────
+  { title: "Sarajevo",     country: "Bosnie-Herzégovine",    img: img("sarajevo"),     href: href("sarajevo")     },
 ];
 
 const CARD_H = 0.675;
@@ -243,9 +294,10 @@ export function initDestinationsWheel(root, label = "Nos destinations", action) 
     setActive(clamp(Math.round(pos), 0, last));
   }
 
-  // Tant que la roue est à l'écran, on capture la molette pour faire défiler
-  // les destinations ; une fois arrivé au bout (ou au début), on relâche pour
-  // laisser la page descendre / remonter normalement.
+  // ─── Scroll molette sur le stage ──────────────────────────────────────────
+  // Capture la molette uniquement quand la roue est visible ;
+  // relâche quand on est au bout pour laisser la page défiler normalement.
+
   let inView = false;
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver(
@@ -262,13 +314,64 @@ export function initDestinationsWheel(root, label = "Nos destinations", action) 
     const dir = event.deltaY;
     const atEnd = target >= last && dir > 0;
     const atStart = target <= 0 && dir < 0;
-    if (atEnd || atStart) return; // on libère le scroll de la page
+    if (atEnd || atStart) return; // libère le scroll de la page
     event.preventDefault();
     to(target + dir / WHEEL_UNITS);
     window.clearTimeout(settling);
     settling = window.setTimeout(() => to(Math.round(target)), SETTLE);
   };
   let settling = 0;
+
+  // ─── Boutons de navigation latéraux ───────────────────────────────────────
+  // Deux boutons (← précédent / → suivant) injectés dans la section parent.
+
+  function buildNavButtons() {
+    const section = root.closest
+      ? root.closest(".destinations") || root.parentElement
+      : root.parentElement;
+    if (!section) return;
+
+    const btnPrev = document.createElement("button");
+    btnPrev.className = "dw-nav-btn dw-nav-prev";
+    btnPrev.setAttribute("aria-label", "Destination précédente");
+    btnPrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`;
+    btnPrev.addEventListener("click", () => {
+      to(Math.round(target) - 1);
+    });
+
+    const btnNext = document.createElement("button");
+    btnNext.className = "dw-nav-btn dw-nav-next";
+    btnNext.setAttribute("aria-label", "Destination suivante");
+    btnNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+    btnNext.addEventListener("click", () => {
+      to(Math.round(target) + 1);
+    });
+
+    section.appendChild(btnPrev);
+    section.appendChild(btnNext);
+
+    // Met à jour l'état disabled selon la position
+    function updateBtns() {
+      btnPrev.disabled = target <= 0;
+      btnNext.disabled = target >= last + 1;
+    }
+    updateBtns();
+    // On surveille les changements de target via requestAnimationFrame
+    const origDraw = draw;
+    const checkInterval = setInterval(() => {
+      btnPrev.disabled = Math.round(target) <= 0;
+      btnNext.disabled = Math.round(target) >= last + 1;
+    }, 200);
+    // Nettoyage si jamais l'élément est retiré du DOM
+    if ("MutationObserver" in window) {
+      const mo = new MutationObserver(() => {
+        if (!document.contains(stage)) clearInterval(checkInterval);
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  buildNavButtons();
 
   const onPointerDown = event => {
     drag = { x: event.clientX, y: event.clientY };
