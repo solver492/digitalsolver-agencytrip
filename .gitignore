@@ -1,6 +1,21 @@
-# Clones / artefacts locaux à ne jamais versionner
-repo-clone/
-deploy/
-.vite/
-node_modules/
+# Gradle and build outputs
+.gradle/
+build/
+app/build/
+*.hprof
 *.log
+.build-outputs/
+.kotlin/
+
+# IDE files
+.idea/
+*.iml
+.DS_Store
+
+# Local secrets & configs
+local.properties
+.env
+
+# Keep gradle wrapper jar and keystore base64
+!gradle/wrapper/gradle-wrapper.jar
+!debug.keystore.base64
