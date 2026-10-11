@@ -3,6 +3,7 @@ package com.example.manasik.ui.screens
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -286,12 +287,36 @@ fun QuotesAndFaqScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Column(modifier = Modifier.padding(20.dp)) {
-                                Text(
-                                    text = "Manasik Bayt Travel",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFD4AF37)
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    androidx.compose.foundation.Image(
+                                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.logo_manasik_header),
+                                        contentDescription = "Logo Manasik Bayt Travel",
+                                        contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                                        modifier = Modifier
+                                            .height(54.dp)
+                                            .width(120.dp)
+                                            .background(Color(0xFF0A2E2E), RoundedCornerShape(10.dp))
+                                            .padding(6.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(14.dp))
+                                    Column {
+                                        Text(
+                                            text = "Manasik Bayt Travel",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFFD4AF37)
+                                        )
+                                        Text(
+                                            text = "Agence de Voyage Agréée",
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(10.dp))
                                 Text(
                                     text = "Votre partenaire de confiance pour vos voyages sacrés et vos vacances à travers le monde.",
                                     style = MaterialTheme.typography.bodySmall,

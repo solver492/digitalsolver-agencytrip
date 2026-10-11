@@ -2,7 +2,10 @@ package com.example.manasik.ui.components
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Language
@@ -12,10 +15,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,18 +38,35 @@ fun AppTopBar(
 
     TopAppBar(
         title = {
-            Column {
-                Text(
-                    text = "Manasik Bayt",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.testTag("app_top_bar_brand")
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_manasik_header),
+                    contentDescription = "Logo Manasik Bayt Travel",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .height(40.dp)
+                        .width(92.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color(0xFF0A2E2E))
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
                 )
-                Text(
-                    text = "Agence de voyage",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Column {
+                    Text(
+                        text = "Manasik Bayt",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Agence de voyage",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFFD4AF37)
+                    )
+                }
             }
         },
         actions = {
