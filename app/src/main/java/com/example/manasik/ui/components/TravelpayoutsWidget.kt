@@ -81,7 +81,17 @@ fun TravelpayoutsWidgetView(
                                 mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                                 javaScriptCanOpenWindowsAutomatically = true
                                 setSupportMultipleWindows(false)
-                                userAgentString = settings.userAgentString + " ManasikBaytTravelApp/1.0"
+                                allowFileAccess = true
+                                allowContentAccess = true
+                                useWideViewPort = true
+                                loadWithOverviewMode = true
+                                cacheMode = WebSettings.LOAD_DEFAULT
+                                userAgentString = "Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+                            }
+                            val webViewInstance = this
+                            android.webkit.CookieManager.getInstance().apply {
+                                setAcceptCookie(true)
+                                setAcceptThirdPartyCookies(webViewInstance, true)
                             }
                             webChromeClient = WebChromeClient()
                             webViewClient = object : WebViewClient() {
@@ -95,11 +105,14 @@ fun TravelpayoutsWidgetView(
                                     request: WebResourceRequest?
                                 ): Boolean {
                                     val targetUri = request?.url ?: return false
+                                    val urlString = targetUri.toString()
                                     val host = targetUri.host?.lowercase() ?: ""
-                                    // Keep Travelpayouts script loader inside WebView, open external booking/search pages in browser
-                                    if (host.contains("tp.media") || host.contains("travelpayouts.com")) {
+
+                                    // Let internal Travelpayouts scripts, cascoon components and assets load within WebView
+                                    if (host.contains("tp.media") || host.contains("travelpayouts.com") || host.contains("wway.io") || host.contains("apistp.com")) {
                                         return false
                                     }
+                                    // Open external booking results in the user's browser
                                     return try {
                                         val intent = Intent(Intent.ACTION_VIEW, targetUri).apply {
                                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -112,7 +125,7 @@ fun TravelpayoutsWidgetView(
                                 }
                             }
                             loadDataWithBaseURL(
-                                "https://agency.manasiktravelagency.com/",
+                                "https://manasiktravelagency.com/",
                                 htmlContent,
                                 "text/html",
                                 "UTF-8",

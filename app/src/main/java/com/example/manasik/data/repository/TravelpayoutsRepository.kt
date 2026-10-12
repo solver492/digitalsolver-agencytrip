@@ -25,9 +25,9 @@ object TravelpayoutsRepository {
             subtitle = "Comparateur de vols en temps réel (Saudia, Royal Air Maroc, Turkish Airlines, Emirates...)",
             providerLabel = "Travelpayouts Flights / Aviasales",
             scriptSnippet = """
-                <script async src="https://tp.media/content?currency=eur&trs=328745&shmarker=548291&locale=fr&powered_by=true&border_radius=16&plain=true&color_button=%23D4AF37&color_button_text=%23092E52&promo_id=7879&campaign_id=100" charset="utf-8"></script>
+                <script async src="https://tp.media/content?currency=eur&shmarker=548291&locale=fr&powered_by=true&border_radius=16&plain=true&color_button=%23D4AF37&color_button_text=%23092E52&promo_id=7879&campaign_id=100" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://search.aviasales.com/"
+            fallbackSearchUrl = "https://www.aviasales.com/?marker=548291"
         ),
         "hotels" to TravelpayoutsWidgetConfig(
             slug = "hotels",
@@ -35,9 +35,9 @@ object TravelpayoutsRepository {
             subtitle = "Hôtels face au Haram à La Mecque & Médine et séjours dans le monde entier",
             providerLabel = "Travelpayouts Hotels / Hotellook",
             scriptSnippet = """
-                <script async src="https://tp.media/content?currency=eur&trs=328745&shmarker=548291&locale=fr&powered_by=true&border_radius=16&plain=true&color_button=%23D4AF37&color_button_text=%23092E52&promo_id=4132&campaign_id=101" charset="utf-8"></script>
+                <script async src="https://tp.media/content?currency=eur&shmarker=548291&locale=fr&powered_by=true&border_radius=16&plain=true&color_button=%23D4AF37&color_button_text=%23092E52&promo_id=4132&campaign_id=101" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://search.hotellook.com/"
+            fallbackSearchUrl = "https://search.hotellook.com/?marker=548291"
         ),
         "transferts" to TravelpayoutsWidgetConfig(
             slug = "transferts",
@@ -45,9 +45,9 @@ object TravelpayoutsRepository {
             subtitle = "Chauffeurs privés aéroport Djeddah, Médine, Istanbul, Marrakech, Dubaï",
             providerLabel = "Travelpayouts / Kiwitaxi & GetTransfer",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr&from=&to=&powered_by=true&border_radius=16&plain=true&color_button=%23D4AF37&color_button_text=%23092E52&promo_id=2949&campaign_id=1" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr&from=&to=&powered_by=true&border_radius=16&plain=true&color_button=%23D4AF37&color_button_text=%23092E52&promo_id=2949&campaign_id=1" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://kiwitaxi.fr/"
+            fallbackSearchUrl = "https://kiwitaxi.fr/?pap=548291"
         ),
         "guides" to TravelpayoutsWidgetConfig(
             slug = "guides",
@@ -55,9 +55,9 @@ object TravelpayoutsRepository {
             subtitle = "Visites guidées francophones, excursions culturelles et billets coupe-file",
             providerLabel = "Travelpayouts / GetYourGuide & Viator",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr-FR&powered_by=true&campaign_id=108&promo_id=3992" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr-FR&powered_by=true&campaign_id=108&promo_id=3992" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://www.getyourguide.fr/"
+            fallbackSearchUrl = "https://www.getyourguide.fr/?partner_id=548291"
         ),
         "activites" to TravelpayoutsWidgetConfig(
             slug = "activites",
@@ -65,19 +65,19 @@ object TravelpayoutsRepository {
             subtitle = "Safaris désert, croisières Bosphore, montgolfière en Cappadoce, musées",
             providerLabel = "Travelpayouts / Tiqets & Klook",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr&powered_by=true&campaign_id=89&promo_id=2095" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr&powered_by=true&campaign_id=89&promo_id=2095" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://www.tiqets.com/fr/"
+            fallbackSearchUrl = "https://www.tiqets.com/fr/?partner=548291"
         ),
         "esim" to TravelpayoutsWidgetConfig(
             slug = "esim",
             title = "eSIM Internationale Instantanée",
             subtitle = "Forfaits data 4G/5G Arabie saoudite, Turquie, Maroc, Émirats et +200 pays",
-            providerLabel = "Travelpayouts / Airalo & Yesim",
+            providerLabel = "Travelpayouts / Airalo & Drimsim",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr&powered_by=true&color_button=%23D4AF37&campaign_id=541&promo_id=8588" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr&powered_by=true&color_button=%23D4AF37&campaign_id=175&promo_id=4392" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://www.airalo.com/fr"
+            fallbackSearchUrl = "https://www.airalo.com/fr?partner=548291"
         ),
         "location-voiture" to TravelpayoutsWidgetConfig(
             slug = "location-voiture",
@@ -85,9 +85,9 @@ object TravelpayoutsRepository {
             subtitle = "Berlines, SUV et vans familiaux aux aéroports de Djeddah, Médine, Dubaï, Marrakech",
             providerLabel = "Travelpayouts / EconomyBookings & Localrent",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr&powered_by=true&border_radius=16&plain=true&campaign_id=109&promo_id=4014" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr&powered_by=true&border_radius=16&plain=true&campaign_id=109&promo_id=4014" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://www.economybookings.com/fr"
+            fallbackSearchUrl = "https://www.economybookings.com/fr?partner=548291"
         ),
         "yacht" to TravelpayoutsWidgetConfig(
             slug = "yacht",
@@ -95,9 +95,9 @@ object TravelpayoutsRepository {
             subtitle = "Yachts privés, voiliers et sorties en mer Rouge, Dubaï, Méditerranée",
             providerLabel = "Travelpayouts / Searadar",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr&powered_by=true&campaign_id=258&promo_id=5859" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr&powered_by=true&campaign_id=258&promo_id=5859" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://searadar.com/"
+            fallbackSearchUrl = "https://searadar.com/?partner=548291"
         ),
         "bagages" to TravelpayoutsWidgetConfig(
             slug = "bagages",
@@ -105,9 +105,9 @@ object TravelpayoutsRepository {
             subtitle = "Stockage de valises vérifié près des gares, mosquées et aéroports",
             providerLabel = "Travelpayouts / Radical Storage",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr&powered_by=true&campaign_id=233&promo_id=5369" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr&powered_by=true&campaign_id=233&promo_id=5369" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://radicalstorage.com/fr"
+            fallbackSearchUrl = "https://radicalstorage.com/fr?partner=548291"
         ),
         "indemnisation" to TravelpayoutsWidgetConfig(
             slug = "indemnisation",
@@ -115,9 +115,9 @@ object TravelpayoutsRepository {
             subtitle = "Vérifiez votre éligibilité et réclamez jusqu'à 600 € par passager",
             providerLabel = "Travelpayouts / AirHelp & Compensair",
             scriptSnippet = """
-                <script async src="https://tp.media/content?trs=328745&shmarker=548291&locale=fr&powered_by=true&campaign_id=86&promo_id=2058" charset="utf-8"></script>
+                <script async src="https://tp.media/content?shmarker=548291&locale=fr&powered_by=true&campaign_id=86&promo_id=2058" charset="utf-8"></script>
             """.trimIndent(),
-            fallbackSearchUrl = "https://www.compensair.com/fr/"
+            fallbackSearchUrl = "https://www.compensair.com/fr/?partner=548291"
         )
     )
 
@@ -168,7 +168,11 @@ object TravelpayoutsRepository {
 
             val match = scriptRegex.find(line)
             if (match != null) {
-                customScripts[currentSlug] = match.value
+                // Sanitize: strip out invalid trs= parameter that triggers 'traffic_source is not valid'
+                val sanitizedScript = match.value
+                    .replace(Regex("""[?&]trs=[^&"']+"""), "")
+                    .replace("?&", "?")
+                customScripts[currentSlug] = sanitizedScript
                 importedCount++
             }
         }
@@ -177,7 +181,7 @@ object TravelpayoutsRepository {
 
     /**
      * Builds a responsive, self-contained HTML5 page that renders the Travelpayouts `<script>` widget
-     * with dark/light theme styling and fallback links.
+     * with dark/light theme styling, intelligent fallback form, and error recovery.
      */
     fun buildWidgetHtml(
         config: TravelpayoutsWidgetConfig,
@@ -188,15 +192,23 @@ object TravelpayoutsRepository {
         val cardHex = if (isDarkTheme) "#0E2A47" else "#FFFFFF"
         val textHex = if (isDarkTheme) "#F1F5F9" else "#0F172A"
         val subTextHex = if (isDarkTheme) "#94A3B8" else "#475569"
+        val inputBg = if (isDarkTheme) "#071E36" else "#F1F5F9"
+        val inputBorder = if (isDarkTheme) "#1E4068" else "#CBD5E1"
 
         // Ensure protocol-relative //tp.media URLs use https:// inside WebView
-        val normalizedScript = config.scriptSnippet
+        // and remove invalid trs parameter that throws 400 'traffic_source is not valid'
+        var normalizedScript = config.scriptSnippet
             .replace("src=\"//", "src=\"https://")
             .replace("src='//", "src='https://")
+            .replace(Regex("""[?&]trs=[^&"']+"""), "")
+            .replace("?&", "?")
 
         val destBanner = if (destinationHint.isNotBlank()) {
-            """<div class="dest-pill">📍 Destination sélectionnée : <strong>$destinationHint</strong></div>"""
+            """<div class="dest-pill">📍 Destination : <strong>$destinationHint</strong></div>"""
         } else ""
+
+        val placeholderOrigin = "Paris (CDG/ORY)"
+        val placeholderDest = if (destinationHint.isNotBlank()) destinationHint else "Djeddah / Médine (JED)"
 
         return """
             <!DOCTYPE html>
@@ -209,7 +221,7 @@ object TravelpayoutsRepository {
                     * { box-sizing: border-box; }
                     body {
                         margin: 0;
-                        padding: 12px;
+                        padding: 10px;
                         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                         background-color: $bgHex;
                         color: $textHex;
@@ -219,7 +231,7 @@ object TravelpayoutsRepository {
                         border-radius: 18px;
                         padding: 14px;
                         border: 1px solid rgba(212, 175, 55, 0.35);
-                        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+                        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.10);
                         min-height: 220px;
                     }
                     .dest-pill {
@@ -228,35 +240,82 @@ object TravelpayoutsRepository {
                         color: #D4AF37;
                         border: 1px solid rgba(212, 175, 55, 0.4);
                         border-radius: 999px;
-                        padding: 6px 12px;
+                        padding: 5px 12px;
                         font-size: 12px;
                         margin-bottom: 12px;
+                        font-weight: 600;
                     }
                     .widget-container {
                         width: 100%;
-                        min-height: 160px;
+                        min-height: 120px;
+                    }
+                    /* Backup search form styled like Travelpayouts when script is still loading or partner unapproved */
+                    .native-search-card {
+                        display: none;
+                        padding: 14px;
+                        background: $inputBg;
+                        border-radius: 14px;
+                        border: 1px dashed rgba(212, 175, 55, 0.4);
+                        margin-top: 8px;
+                    }
+                    .form-grid {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 10px;
+                        margin-bottom: 12px;
+                    }
+                    @media (max-width: 480px) {
+                        .form-grid { grid-template-columns: 1fr; }
+                    }
+                    .form-field label {
+                        display: block;
+                        font-size: 11px;
+                        font-weight: 700;
+                        color: #D4AF37;
+                        margin-bottom: 4px;
+                        text-transform: uppercase;
+                    }
+                    .form-field input, .form-field select {
+                        width: 100%;
+                        padding: 10px 12px;
+                        border-radius: 10px;
+                        border: 1px solid $inputBorder;
+                        background: $cardHex;
+                        color: $textHex;
+                        font-size: 13px;
+                        outline: none;
+                    }
+                    .btn-search {
+                        width: 100%;
+                        display: block;
+                        background: linear-gradient(180deg, #E8CA65 0%, #D4AF37 50%, #BA8F1D 100%);
+                        color: #092E52;
+                        font-weight: 800;
+                        text-align: center;
+                        text-decoration: none;
+                        padding: 12px;
+                        border-radius: 12px;
+                        font-size: 14px;
+                        border: none;
+                        cursor: pointer;
+                        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
                     }
                     .fallback-box {
                         margin-top: 14px;
-                        padding-top: 12px;
+                        padding-top: 10px;
                         border-top: 1px solid rgba(148, 163, 184, 0.2);
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
                         flex-wrap: wrap;
                         gap: 8px;
-                        font-size: 12px;
+                        font-size: 11px;
                         color: $subTextHex;
                     }
-                    .direct-btn {
-                        display: inline-block;
-                        background: linear-gradient(180deg, #E8CA65 0%, #D4AF37 50%, #BA8F1D 100%);
-                        color: #092E52;
+                    .direct-link {
+                        color: #D4AF37;
                         font-weight: 700;
                         text-decoration: none;
-                        padding: 8px 14px;
-                        border-radius: 999px;
-                        font-size: 12px;
                     }
                 </style>
             </head>
@@ -266,13 +325,61 @@ object TravelpayoutsRepository {
                     <div id="tp-widget-mount" class="widget-container">
                         $normalizedScript
                     </div>
+
+                    <!-- Instant Search Form (Guarantees user always sees an interactive travel search) -->
+                    <div id="tp-fallback-form" class="native-search-card">
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label>Départ</label>
+                                <input type="text" id="origin-input" value="$placeholderOrigin" />
+                            </div>
+                            <div class="form-field">
+                                <label>Arrivée / Destination</label>
+                                <input type="text" id="dest-input" value="$placeholderDest" />
+                            </div>
+                        </div>
+                        <a id="btn-do-search" class="btn-search" href="${config.fallbackSearchUrl}" target="_blank" rel="noopener">
+                            🔍 Lancer la recherche sur le comparateur
+                        </a>
+                    </div>
+
                     <div class="fallback-box">
-                        <span>Propulsé par ${config.providerLabel}</span>
-                        <a class="direct-btn" href="${config.fallbackSearchUrl}" target="_blank" rel="noopener">Ouvrir en plein écran ↗</a>
+                        <span>Partenaire : <strong>${config.providerLabel}</strong></span>
+                        <a class="direct-link" href="${config.fallbackSearchUrl}" target="_blank" rel="noopener">
+                            Ouvrir sur le portail partenaire ↗
+                        </a>
                     </div>
                 </div>
+
+                <script>
+                    // If tp-cascoon customElement is not mounted after 1.8s, reveal the fallback search card
+                    setTimeout(function() {
+                        var mount = document.getElementById('tp-widget-mount');
+                        var cascoon = mount ? mount.querySelector('tp-cascoon, iframe, form, div.app--tab, div[class*="widget"]') : null;
+                        if (!cascoon || mount.offsetHeight < 50) {
+                            var fb = document.getElementById('tp-fallback-form');
+                            if (fb) fb.style.display = 'block';
+                        }
+                    }, 1800);
+
+                    // Dynamic search link updating based on user inputs
+                    var originInput = document.getElementById('origin-input');
+                    var destInput = document.getElementById('dest-input');
+                    var searchBtn = document.getElementById('btn-do-search');
+
+                    function updateSearchUrl() {
+                        if (!searchBtn) return;
+                        var o = encodeURIComponent(originInput ? originInput.value : '');
+                        var d = encodeURIComponent(destInput ? destInput.value : '');
+                        var base = '${config.fallbackSearchUrl}';
+                        searchBtn.href = base + (base.indexOf('?') >= 0 ? '&' : '?') + 'origin=' + o + '&destination=' + d;
+                    }
+                    if (originInput) originInput.addEventListener('input', updateSearchUrl);
+                    if (destInput) destInput.addEventListener('input', updateSearchUrl);
+                </script>
             </body>
             </html>
         """.trimIndent()
     }
 }
+
