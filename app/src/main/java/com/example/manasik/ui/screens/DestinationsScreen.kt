@@ -22,6 +22,7 @@ fun DestinationsScreen(
     onSelectDestination: (Destination) -> Unit,
     onOpenQuoteDialog: (destination: String, service: String) -> Unit
 ) {
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
     var searchQuery by remember { mutableStateOf("") }
     var selectedTag by remember { mutableStateOf("Tous") }
 
@@ -49,15 +50,15 @@ fun DestinationsScreen(
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Rechercher une destination ou un pays") },
-            placeholder = { Text("Ex: Mecque, Istanbul, Turquie, Dubaï...") },
+            label = { Text(strings.searchCityCountry) },
+            placeholder = { Text(strings.destinationSearchPlaceholder) },
             leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = "Rechercher", tint = MaterialTheme.colorScheme.primary)
+                Icon(Icons.Default.Search, contentDescription = strings.search, tint = MaterialTheme.colorScheme.primary)
             },
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
                     IconButton(onClick = { searchQuery = "" }) {
-                        Icon(Icons.Default.Clear, contentDescription = "Effacer")
+                        Icon(Icons.Default.Clear, contentDescription = strings.cancel)
                     }
                 }
             },
@@ -77,12 +78,12 @@ fun DestinationsScreen(
         ) {
             items(tags) { tag ->
                 val label = when (tag) {
-                    "Tous" -> "Toutes"
-                    "omra-hajj" -> "Omra & Hajj"
-                    "culture" -> "Culture"
-                    "plage" -> "Plages & Détente"
+                    "Tous" -> strings.catAll
+                    "omra-hajj" -> strings.catOmra
+                    "culture" -> strings.catMiddleEast
+                    "plage" -> "Beach & Relax"
                     "nature" -> "Nature"
-                    "ville" -> "Grandes Villes"
+                    "ville" -> "Cities"
                     else -> tag.replaceFirstChar { it.uppercase() }
                 }
                 FilterChip(
@@ -97,7 +98,7 @@ fun DestinationsScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = "${filteredDestinations.size} destination${if (filteredDestinations.size > 1) "s" else ""} trouvée${if (filteredDestinations.size > 1) "s" else ""}",
+            text = "${filteredDestinations.size} ${strings.navDestinations}",
             style = MaterialTheme.typography.bodySmall,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

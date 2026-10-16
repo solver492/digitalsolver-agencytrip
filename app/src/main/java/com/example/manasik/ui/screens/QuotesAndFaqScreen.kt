@@ -34,11 +34,13 @@ fun QuotesAndFaqScreen(
     onOpenQuoteDialog: (destination: String, service: String) -> Unit
 ) {
     val context = LocalContext.current
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
+    val currentLanguage = com.example.manasik.data.i18n.LocalCurrentLanguage.current
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Mes Devis", "FAQ & Aide", "Contact Agence")
+    val tabs = listOf(strings.tabMyQuotes, strings.tabFaqHelp, strings.tabAgencyContact)
 
     val quotes by QuotesRepository.quotes.collectAsState()
-    val faqs = remember { FaqRepository.allFaqs }
+    val faqs = remember(currentLanguage) { FaqRepository.getFaqs(currentLanguage) }
 
     Column(
         modifier = Modifier
@@ -84,22 +86,22 @@ fun QuotesAndFaqScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Aucune demande de devis en cours",
+                            text = strings.emptyQuotesTitle,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Faites votre première demande de devis gratuite pour un voyage sur mesure.",
+                            text = strings.emptyQuotesSubtitle,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                         LiquidGlassButton(
-                            onClick = { onOpenQuoteDialog("", "Séjour sur mesure") },
+                            onClick = { onOpenQuoteDialog("", strings.quote) },
                             isGold = true
                         ) {
-                            Text("Demander un devis", fontWeight = FontWeight.Bold, color = Color(0xFF092E52))
+                            Text(strings.requestQuote, fontWeight = FontWeight.Bold, color = Color(0xFF092E52))
                         }
                     }
                 } else {
@@ -115,18 +117,18 @@ fun QuotesAndFaqScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Vos demandes enregistrées (${quotes.size})",
+                                    text = "${strings.yourRegisteredQuotes} (${quotes.size})",
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                                 LiquidGlassButton(
-                                    onClick = { onOpenQuoteDialog("", "Nouveau devis") },
+                                    onClick = { onOpenQuoteDialog("", strings.requestNewQuoteBtn) },
                                     isGold = true,
                                     shape = RoundedCornerShape(12.dp)
                                 ) {
                                     Icon(Icons.Default.Add, contentDescription = null, tint = Color(0xFF092E52), modifier = Modifier.size(16.dp))
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Nouveau", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color(0xFF092E52))
+                                    Text(strings.requestNewQuoteBtn, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = Color(0xFF092E52))
                                 }
                             }
                         }
@@ -148,7 +150,7 @@ fun QuotesAndFaqScreen(
                                             color = Color(0xFFD4AF37)
                                         )
                                         LiquidGlassBadge(
-                                            text = "Transmis au conseiller",
+                                            text = strings.statusTransmitted,
                                             textColor = Color(0xFF2A9D8F)
                                         )
                                     }
@@ -160,26 +162,26 @@ fun QuotesAndFaqScreen(
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
-                                        text = "Pour : ${quote.travelersCount} voyageur${if (quote.travelersCount > 1) "s" else ""} • Dates : ${quote.departureDate} -> ${quote.returnDate}",
+                                        text = "${strings.forTravelersText} ${quote.travelersCount} ${strings.travelersUnit} • Dates : ${quote.departureDate} -> ${quote.returnDate}",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     Text(
-                                        text = "Client : ${quote.fullName} (${quote.phone})",
+                                        text = "${strings.clientLabel} ${quote.fullName} (${quote.phone})",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     if (quote.notes.isNotEmpty()) {
                                         Spacer(modifier = Modifier.height(6.dp))
                                         Text(
-                                            text = "Note : « ${quote.notes} »",
+                                            text = "${strings.notesLabel} « ${quote.notes} »",
                                             style = MaterialTheme.typography.bodySmall,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))
                                     LiquidGlassButton(
-                                        onClick = { WhatsAppHelper.openWhatsApp(context, quote) },
+                                        onClick = { WhatsAppHelper.openWhatsApp(context, quote, currentLanguage) },
                                         isGold = true,
                                         shape = RoundedCornerShape(12.dp),
                                         modifier = Modifier.fillMaxWidth()
@@ -192,7 +194,7 @@ fun QuotesAndFaqScreen(
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
-                                            "Renvoyer sur WhatsApp",
+                                            strings.resendWhatsApp,
                                             style = MaterialTheme.typography.labelMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = Color(0xFF092E52)
@@ -213,12 +215,12 @@ fun QuotesAndFaqScreen(
                 ) {
                     item {
                         Text(
-                            text = "Foire Aux Questions (FAQ)",
+                            text = strings.faqTitle,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Tout savoir sur les formalités Omra, les réservations et nos services",
+                            text = strings.faqSubtitle,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -304,13 +306,13 @@ fun QuotesAndFaqScreen(
                                     Spacer(modifier = Modifier.width(14.dp))
                                     Column {
                                         Text(
-                                            text = "Manasik Bayt Travel",
+                                            text = strings.appName,
                                             style = MaterialTheme.typography.titleLarge,
                                             fontWeight = FontWeight.Bold,
                                             color = Color(0xFFD4AF37)
                                         )
                                         Text(
-                                            text = "Agence de Voyage Agréée",
+                                            text = strings.agencySubtitle,
                                             style = MaterialTheme.typography.labelMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -318,7 +320,7 @@ fun QuotesAndFaqScreen(
                                 }
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = "Votre partenaire de confiance pour vos voyages sacrés et vos vacances à travers le monde.",
+                                    text = strings.agencyTrustText,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -343,7 +345,7 @@ fun QuotesAndFaqScreen(
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Column {
-                                        Text("Téléphone & WhatsApp 24/7", style = MaterialTheme.typography.labelMedium)
+                                        Text(strings.phoneWhatsApp247, style = MaterialTheme.typography.labelMedium)
                                         Text("+212 661 631 160", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                     }
                                 }

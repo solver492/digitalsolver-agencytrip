@@ -50,11 +50,13 @@ fun TravelpayoutsWidgetView(
     var reloadKey by remember { mutableIntStateOf(0) }
     var isLoading by remember { mutableStateOf(true) }
 
-    val htmlContent = remember(config, destinationHint, isDarkTheme, reloadKey) {
+    val currentLanguage = com.example.manasik.data.i18n.LocalCurrentLanguage.current
+    val htmlContent = remember(config, destinationHint, isDarkTheme, currentLanguage, reloadKey) {
         TravelpayoutsRepository.buildWidgetHtml(
             config = config,
             destinationHint = destinationHint,
-            isDarkTheme = isDarkTheme
+            isDarkTheme = isDarkTheme,
+            languageCode = currentLanguage
         )
     }
 
@@ -100,6 +102,17 @@ fun TravelpayoutsWidgetView(
                                     isLoading = false
                                 }
 
+                                override fun onReceivedError(
+                                    view: WebView?,
+                                    request: WebResourceRequest?,
+                                    error: android.webkit.WebResourceError?
+                                ) {
+                                    super.onReceivedError(view, request, error)
+                                    if (request?.isForMainFrame == true) {
+                                        isLoading = false
+                                    }
+                                }
+
                                 override fun shouldOverrideUrlLoading(
                                     view: WebView?,
                                     request: WebResourceRequest?
@@ -108,10 +121,24 @@ fun TravelpayoutsWidgetView(
                                     val urlString = targetUri.toString()
                                     val host = targetUri.host?.lowercase() ?: ""
 
-                                    // Let internal Travelpayouts scripts, cascoon components and assets load within WebView
-                                    if (host.contains("tp.media") || host.contains("travelpayouts.com") || host.contains("wway.io") || host.contains("apistp.com")) {
+                                    // Let internal Travelpayouts scripts, cascoon components, CDN, and iframe assets load within WebView
+                                    if (host.contains("tp.media") ||
+                                        host.contains("travelpayouts.com") ||
+                                        host.contains("wway.io") ||
+                                        host.contains("apistp.com") ||
+                                        host.contains("manasiktravelagency.com") ||
+                                        urlString.startsWith("data:") ||
+                                        urlString.startsWith("about:")
+                                    ) {
                                         return false
                                     }
+
+                                    // Only open external browser if user actively clicked a link
+                                    val hasGesture = request.hasGesture()
+                                    if (!hasGesture) {
+                                        return false
+                                    }
+
                                     // Open external booking results in the user's browser
                                     return try {
                                         val intent = Intent(Intent.ACTION_VIEW, targetUri).apply {
@@ -279,6 +306,7 @@ fun TravelpayoutsWidgetDialog(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
+                val strings = com.example.manasik.data.i18n.LocalAppStrings.current
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -302,10 +330,11 @@ fun TravelpayoutsWidgetDialog(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Portail Direct",
+                            text = strings.openExternal,
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1
                         )
                     }
 
@@ -325,10 +354,11 @@ fun TravelpayoutsWidgetDialog(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = "Devis Conseiller",
+                            text = strings.agencyQuote,
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF092E52)
+                            color = Color(0xFF092E52),
+                            maxLines = 1
                         )
                     }
                 }

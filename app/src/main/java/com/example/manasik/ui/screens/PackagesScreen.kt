@@ -32,7 +32,9 @@ import com.example.manasik.ui.components.LiquidGlassCard
 fun PackagesScreen(
     onOpenQuoteDialog: (destination: String, service: String) -> Unit
 ) {
-    val packages = remember { PackagesRepository.allPackages }
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
+    val currentLanguage = com.example.manasik.data.i18n.LocalCurrentLanguage.current
+    val packages = remember(currentLanguage) { PackagesRepository.getPackages(currentLanguage) }
 
     Column(
         modifier = Modifier
@@ -40,13 +42,13 @@ fun PackagesScreen(
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
-            text = "Nos Forfaits de Voyage",
+            text = strings.packagesTitle,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = "Formules organisées de A à Z avec vols, hébergements et transferts",
+            text = strings.packagesSubtitle,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -100,7 +102,7 @@ fun PackagesScreen(
                                 )
                                 Spacer(modifier = Modifier.width(3.dp))
                                 Text(
-                                    text = "${pkg.rating} (${pkg.reviewsCount} avis)",
+                                    text = "${pkg.rating} (${pkg.reviewsCount} ${strings.reviewsCountText})",
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -174,7 +176,7 @@ fun PackagesScreen(
                         if (pkg.highlights.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "Inclus dans ce forfait :",
+                                text = strings.packageIncluded,
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFD4AF37)
@@ -217,7 +219,7 @@ fun PackagesScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Réserver ou Personnaliser ce forfait",
+                                text = strings.bookOrCustomizePackage,
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF092E52)

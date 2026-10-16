@@ -47,6 +47,7 @@ fun HomeScreen(
     onOpenTravelpayoutsWidget: (serviceSlug: String, destinationHint: String) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
     var searchDestination by remember { mutableStateOf("") }
     var travelersCount by remember { mutableIntStateOf(2) }
     var selectedDates by remember { mutableStateOf("") }
@@ -73,7 +74,7 @@ fun HomeScreen(
         ) {
             AssetImage(
                 assetPath = "images/hero-banner.jpg",
-                contentDescription = "Bannière Manasik Bayt Travel",
+                contentDescription = strings.heroTitle,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -96,19 +97,19 @@ fun HomeScreen(
                     .padding(20.dp)
             ) {
                 LiquidGlassBadge(
-                    text = "AGENCE DE VOYAGE AGRÉÉE",
+                    text = strings.heroBadge,
                     textColor = Color(0xFFD4AF37),
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Text(
-                    text = "Voyagez avec\nManasik Bayt Travel",
+                    text = strings.heroTitle,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "Vols, hôtels, transferts, forfaits Omra & séjours sur mesure au meilleur prix.",
+                    text = strings.heroSubtitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.White.copy(alpha = 0.9f)
                 )
@@ -137,7 +138,7 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Réservation & Devis Express",
+                            text = strings.expressBookingTitle,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -148,7 +149,7 @@ fun HomeScreen(
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = if (showHomeLiveWidget) "Mode Formulaire" else "Widget Direct",
+                            text = if (showHomeLiveWidget) strings.agencyQuote else strings.directComparator,
                             style = MaterialTheme.typography.labelSmall,
                             color = Color(0xFFD4AF37)
                         )
@@ -201,7 +202,7 @@ fun HomeScreen(
                 OutlinedTextField(
                     value = searchDestination,
                     onValueChange = { searchDestination = it },
-                    label = { Text("Destination souhaitée") },
+                    label = { Text(strings.destinationSearchPlaceholder) },
                     placeholder = { Text("La Mecque, Médine, Istanbul, Dubaï...") },
                     leadingIcon = {
                         Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color(0xFFD4AF37))
@@ -218,8 +219,8 @@ fun HomeScreen(
                 OutlinedTextField(
                     value = selectedDates,
                     onValueChange = { selectedDates = it },
-                    label = { Text("Période souhaitée") },
-                    placeholder = { Text("Ex: Novembre 2026, Ramadan...") },
+                    label = { Text(strings.datesPlaceholder) },
+                    placeholder = { Text("Ex: Ramadan 2026, Novembre...") },
                     leadingIcon = {
                         Icon(Icons.Default.CalendarToday, contentDescription = null, tint = Color(0xFFD4AF37))
                     },
@@ -251,7 +252,7 @@ fun HomeScreen(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Nombre de voyageurs :",
+                                text = "${strings.travelersCountLabel} :",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium
                             )
@@ -262,7 +263,7 @@ fun HomeScreen(
                                 enabled = travelersCount > 1,
                                 modifier = Modifier.size(36.dp)
                             ) {
-                                Icon(Icons.Default.Remove, contentDescription = "Moins", modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.Remove, contentDescription = null, modifier = Modifier.size(16.dp))
                             }
                             Text(
                                 text = " $travelersCount ",
@@ -274,7 +275,7 @@ fun HomeScreen(
                                 onClick = { if (travelersCount < 50) travelersCount++ },
                                 modifier = Modifier.size(36.dp)
                             ) {
-                                Icon(Icons.Default.Add, contentDescription = "Plus", modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -285,7 +286,7 @@ fun HomeScreen(
                 // Liquid Glass Button
                 LiquidGlassButton(
                     onClick = {
-                        onOpenQuoteDialog(searchDestination, "Devis Express")
+                        onOpenQuoteDialog(searchDestination, strings.quote)
                     },
                     isGold = true,
                     modifier = Modifier
@@ -300,7 +301,7 @@ fun HomeScreen(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Demander un devis gratuit",
+                        text = strings.quoteBannerButton,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF092E52)
@@ -319,13 +320,13 @@ fun HomeScreen(
         ) {
             Column {
                 Text(
-                    text = "Destinations Phares",
+                    text = strings.featuredDestinationsTitle,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Lieux saints & escapades d'exception",
+                    text = strings.featuredDestinationsSubtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -334,7 +335,7 @@ fun HomeScreen(
                 onClick = onNavigateToDestinations,
                 modifier = Modifier.testTag("see_all_destinations_btn")
             ) {
-                Text("Tout voir")
+                Text(strings.seeAll)
             }
         }
 
@@ -406,7 +407,7 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                "Découvrir",
+                                strings.discover,
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -428,13 +429,13 @@ fun HomeScreen(
         ) {
             Column {
                 Text(
-                    text = "Nos Services",
+                    text = strings.ourServicesTitle,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Tout pour organiser votre voyage sereinement",
+                    text = strings.ourServicesSubtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -443,7 +444,7 @@ fun HomeScreen(
                 onClick = onNavigateToServices,
                 modifier = Modifier.testTag("see_all_services_btn")
             ) {
-                Text("Explorer")
+                Text(strings.explore)
             }
         }
 
@@ -505,13 +506,13 @@ fun HomeScreen(
         ) {
             Column {
                 Text(
-                    text = "Forfaits Populaires",
+                    text = strings.ourPackagesTitle,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Formules complètes clés en main",
+                    text = strings.ourPackagesSubtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -520,7 +521,7 @@ fun HomeScreen(
                 onClick = onNavigateToPackages,
                 modifier = Modifier.testTag("see_all_packages_btn")
             ) {
-                Text("Voir tout")
+                Text(strings.seeAll)
             }
         }
 
@@ -592,7 +593,7 @@ fun HomeScreen(
                                 shape = RoundedCornerShape(14.dp)
                             ) {
                                 Text(
-                                    "En savoir plus",
+                                    strings.details,
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF092E52)
@@ -615,12 +616,12 @@ fun HomeScreen(
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                 Text(
-                    text = "Avis Voyageurs",
+                    text = strings.testimonialsTitle,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Ils voyagent en toute confiance avec Manasik Bayt Travel",
+                    text = strings.testimonialsSubtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -676,7 +677,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        // Contact Agency Banner (Fixed layout: perfectly balanced buttons without text wrapping)
+        // Contact Agency Banner
         LiquidGlassCard(
             shape = RoundedCornerShape(22.dp),
             modifier = Modifier
@@ -689,14 +690,14 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Prêt pour votre prochain voyage ?",
+                    text = strings.quoteBannerTitle,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = "Notre équipe d'experts est disponible pour concevoir votre itinéraire sur mesure.",
+                    text = strings.quoteBannerSubtitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -750,7 +751,7 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            "Envoyer Email",
+                            "Email",
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface,

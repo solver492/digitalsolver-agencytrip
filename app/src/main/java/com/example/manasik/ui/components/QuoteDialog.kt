@@ -2,7 +2,6 @@ package com.example.manasik.ui.components
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.manasik.data.i18n.LocalAppStrings
+import com.example.manasik.data.i18n.LocalCurrentLanguage
 import com.example.manasik.data.model.QuoteRequest
 import com.example.manasik.data.repository.QuotesRepository
 import com.example.manasik.util.WhatsAppHelper
@@ -37,6 +38,9 @@ fun QuoteDialog(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
+    val strings = LocalAppStrings.current
+    val currentLanguage = LocalCurrentLanguage.current
+
     var destination by remember { mutableStateOf(initialDestination) }
     var travelersCount by remember { mutableIntStateOf(2) }
     var departureDate by remember { mutableStateOf("") }
@@ -61,30 +65,30 @@ fun QuoteDialog(
                 Column(
                     modifier = Modifier
                         .padding(24.dp)
-                        .fillMaxWidth(),
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
                         imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Succès",
+                        contentDescription = null,
                         tint = Color(0xFFD4AF37),
                         modifier = Modifier.size(64.dp)
                     )
                     Spacer(modifier = Modifier.height(14.dp))
                     Text(
-                        text = "Demande envoyée !",
+                        text = strings.quoteSentSuccess,
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     LiquidGlassBadge(
-                        text = "RÉFÉRENCE : ${quote.id}",
+                        text = "${strings.quoteReference} ${quote.id}",
                         textColor = Color(0xFFD4AF37)
                     )
                     Spacer(modifier = Modifier.height(14.dp))
                     Text(
-                        text = "Merci ${quote.fullName}. Votre message WhatsApp a été préparé avec soin pour transmission directe à nos conseillers.",
+                        text = "${strings.quoteThankYou} ${quote.fullName}.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -92,7 +96,7 @@ fun QuoteDialog(
 
                     // Open / Resend WhatsApp Button
                     LiquidGlassButton(
-                        onClick = { WhatsAppHelper.openWhatsApp(context, quote) },
+                        onClick = { WhatsAppHelper.openWhatsApp(context, quote, currentLanguage) },
                         isGold = true,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -106,7 +110,7 @@ fun QuoteDialog(
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "Ouvrir WhatsApp (+212 661 631 160)",
+                            text = strings.openWhatsAppBtn,
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF092E52)
@@ -134,7 +138,7 @@ fun QuoteDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Appeler l'agence",
+                            text = strings.callAgencyBtn,
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface
@@ -149,7 +153,7 @@ fun QuoteDialog(
                             .fillMaxWidth()
                             .testTag("quote_success_close_button")
                     ) {
-                        Text("Fermer")
+                        Text(strings.close)
                     }
                 }
             } else {
@@ -165,19 +169,19 @@ fun QuoteDialog(
                     ) {
                         Column {
                             Text(
-                                text = "Demande de Devis",
+                                text = strings.quoteDialogTitle,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = "Réponse instantanée par WhatsApp & Email",
+                                text = strings.quoteDialogSubtitle,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFFD4AF37)
                             )
                         }
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.Default.Close, contentDescription = "Fermer")
+                            Icon(Icons.Default.Close, contentDescription = strings.close)
                         }
                     }
 
@@ -186,8 +190,8 @@ fun QuoteDialog(
                     OutlinedTextField(
                         value = destination,
                         onValueChange = { destination = it },
-                        label = { Text("Destination souhaitée *") },
-                        placeholder = { Text("Ex: La Mecque, Médine, Istanbul...") },
+                        label = { Text("${strings.formDestination} *") },
+                        placeholder = { Text(strings.destinationSearchPlaceholder) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("quote_destination_input"),
@@ -197,7 +201,7 @@ fun QuoteDialog(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = "Nombre de voyageurs",
+                        text = strings.formTravelers,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium
                     )
@@ -209,7 +213,7 @@ fun QuoteDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "$travelersCount voyageur${if (travelersCount > 1) "s" else ""}",
+                            text = "$travelersCount ${strings.travelersUnit}",
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -218,13 +222,13 @@ fun QuoteDialog(
                                 onClick = { if (travelersCount > 1) travelersCount-- },
                                 enabled = travelersCount > 1
                             ) {
-                                Icon(Icons.Default.Remove, contentDescription = "Moins")
+                                Icon(Icons.Default.Remove, contentDescription = "-")
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             FilledTonalIconButton(
                                 onClick = { if (travelersCount < 50) travelersCount++ }
                             ) {
-                                Icon(Icons.Default.Add, contentDescription = "Plus")
+                                Icon(Icons.Default.Add, contentDescription = "+")
                             }
                         }
                     }
@@ -235,7 +239,7 @@ fun QuoteDialog(
                         OutlinedTextField(
                             value = departureDate,
                             onValueChange = { departureDate = it },
-                            label = { Text("Date départ *") },
+                            label = { Text("${strings.formDepartureDate} *") },
                             placeholder = { Text("JJ/MM/AAAA") },
                             modifier = Modifier
                                 .weight(1f)
@@ -246,7 +250,7 @@ fun QuoteDialog(
                         OutlinedTextField(
                             value = returnDate,
                             onValueChange = { returnDate = it },
-                            label = { Text("Date retour") },
+                            label = { Text(strings.returnDateLabel) },
                             placeholder = { Text("JJ/MM/AAAA") },
                             modifier = Modifier
                                 .weight(1f)
@@ -260,8 +264,8 @@ fun QuoteDialog(
                     OutlinedTextField(
                         value = fullName,
                         onValueChange = { fullName = it },
-                        label = { Text("Nom et prénom *") },
-                        placeholder = { Text("Votre nom complet") },
+                        label = { Text("${strings.formName} *") },
+                        placeholder = { Text(strings.formName) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("quote_name_input"),
@@ -273,8 +277,8 @@ fun QuoteDialog(
                     OutlinedTextField(
                         value = phone,
                         onValueChange = { phone = it },
-                        label = { Text("Numéro WhatsApp *") },
-                        placeholder = { Text("+212 6... ou +33 6...") },
+                        label = { Text("${strings.formPhone} *") },
+                        placeholder = { Text("+212 6... / +34 6... / +33 6...") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -287,8 +291,8 @@ fun QuoteDialog(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Adresse email") },
-                        placeholder = { Text("votre.email@exemple.com") },
+                        label = { Text(strings.formEmail) },
+                        placeholder = { Text("exemple@email.com") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -301,8 +305,8 @@ fun QuoteDialog(
                     OutlinedTextField(
                         value = notes,
                         onValueChange = { notes = it },
-                        label = { Text("Besoins particuliers (Optionnel)") },
-                        placeholder = { Text("Hôtel 4/5*, vol direct, vue Kaaba, guide francophone...") },
+                        label = { Text("${strings.formMessage} (${strings.formOptional})") },
+                        placeholder = { Text("...") },
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 3
                     )
@@ -322,11 +326,11 @@ fun QuoteDialog(
                     LiquidGlassButton(
                         onClick = {
                             if (destination.isBlank()) {
-                                errorMessage = "Veuillez indiquer une destination."
+                                errorMessage = strings.fillFormError
                             } else if (fullName.isBlank()) {
-                                errorMessage = "Veuillez renseigner votre nom."
+                                errorMessage = strings.fillFormError
                             } else if (phone.isBlank()) {
-                                errorMessage = "Veuillez renseigner un numéro de téléphone."
+                                errorMessage = strings.fillFormError
                             } else {
                                 val randomNum = (100..999).random()
                                 val refId = "DEV-2026-$randomNum"
@@ -348,7 +352,7 @@ fun QuoteDialog(
                                 errorMessage = null
 
                                 // Instantly launch WhatsApp with formatted message
-                                WhatsAppHelper.openWhatsApp(context, newRequest)
+                                WhatsAppHelper.openWhatsApp(context, newRequest, currentLanguage)
                             }
                         },
                         isGold = true,
@@ -364,7 +368,7 @@ fun QuoteDialog(
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "Envoyer sur WhatsApp",
+                            text = strings.formSubmitWhatsApp,
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF092E52)

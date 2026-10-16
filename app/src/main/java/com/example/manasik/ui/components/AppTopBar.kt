@@ -36,6 +36,8 @@ fun AppTopBar(
     val context = LocalContext.current
     var showLangMenu by remember { mutableStateOf(false) }
 
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
+
     TopAppBar(
         title = {
             Row(
@@ -44,11 +46,11 @@ fun AppTopBar(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.logo_manasik_header),
-                    contentDescription = "Logo Manasik Bayt Travel",
+                    contentDescription = strings.appName,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
-                        .height(40.dp)
-                        .width(92.dp)
+                        .height(38.dp)
+                        .width(88.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color(0xFF0A2E2E))
                         .padding(horizontal = 4.dp, vertical = 2.dp)
@@ -56,13 +58,13 @@ fun AppTopBar(
                 Spacer(modifier = Modifier.width(10.dp))
                 Column {
                     Text(
-                        text = "Manasik Bayt",
+                        text = strings.appName,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Agence de voyage",
+                        text = strings.agencySubtitle,
                         style = MaterialTheme.typography.bodySmall,
                         color = Color(0xFFD4AF37)
                     )
@@ -81,54 +83,58 @@ fun AppTopBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Phone,
-                    contentDescription = "Appeler l'agence (+212 661 631 160)",
+                    contentDescription = strings.callAgency,
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
 
             Box {
-                IconButton(
+                FilledTonalButton(
                     onClick = { showLangMenu = true },
-                    modifier = Modifier.testTag("lang_switcher_button")
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    modifier = Modifier
+                        .height(36.dp)
+                        .testTag("lang_switcher_button")
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Language,
-                        contentDescription = "Changer de langue",
-                        tint = MaterialTheme.colorScheme.onSurface
+                    val currentFlag = when (currentLanguage.uppercase()) {
+                        "EN" -> "🇬🇧 EN"
+                        "AR" -> "🇸🇦 AR"
+                        "ES" -> "🇪🇸 ES"
+                        else -> "🇫🇷 FR"
+                    }
+                    Text(
+                        text = currentFlag,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold
                     )
                 }
                 DropdownMenu(
                     expanded = showLangMenu,
                     onDismissRequest = { showLangMenu = false }
                 ) {
-                    DropdownMenuItem(
-                        text = { Text("Français (FR)") },
-                        onClick = {
-                            onSelectLanguage("FR")
-                            showLangMenu = false
-                        }
+                    val languages = listOf(
+                        Triple("FR", "Français", "🇫🇷"),
+                        Triple("EN", "English", "🇬🇧"),
+                        Triple("AR", "العربية", "🇸🇦"),
+                        Triple("ES", "Español", "🇪🇸")
                     )
-                    DropdownMenuItem(
-                        text = { Text("English (EN)") },
-                        onClick = {
-                            onSelectLanguage("EN")
-                            showLangMenu = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("العربية (AR)") },
-                        onClick = {
-                            onSelectLanguage("AR")
-                            showLangMenu = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Español (ES)") },
-                        onClick = {
-                            onSelectLanguage("ES")
-                            showLangMenu = false
-                        }
-                    )
+                    languages.forEach { (code, name, flag) ->
+                        DropdownMenuItem(
+                            text = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(text = "$flag  $name", fontWeight = if (currentLanguage == code) FontWeight.Bold else FontWeight.Normal)
+                                    if (currentLanguage == code) {
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(text = "✓", color = Color(0xFFD4AF37), fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            },
+                            onClick = {
+                                onSelectLanguage(code)
+                                showLangMenu = false
+                            }
+                        )
+                    }
                 }
             }
 
@@ -138,7 +144,7 @@ fun AppTopBar(
             ) {
                 Icon(
                     imageVector = if (isDarkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
-                    contentDescription = if (isDarkTheme) "Mode clair" else "Mode sombre",
+                    contentDescription = strings.toggleTheme,
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -148,3 +154,4 @@ fun AppTopBar(
         )
     )
 }
+

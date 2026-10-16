@@ -106,6 +106,7 @@ fun DestinationCard(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val strings = com.example.manasik.data.i18n.LocalAppStrings.current
                 LiquidGlassButton(
                     onClick = { onRequestQuote(destination) },
                     isGold = true,
@@ -116,13 +117,13 @@ fun DestinationCard(
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
-                        contentDescription = null,
+                        contentDescription = strings.quote,
                         tint = Color(0xFF092E52),
                         modifier = Modifier.size(15.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Devis",
+                        text = strings.quote,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF092E52)
@@ -138,7 +139,7 @@ fun DestinationCard(
                         .testTag("details_btn_${destination.slug}")
                 ) {
                     Text(
-                        text = "Détails",
+                        text = strings.details,
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
@@ -146,7 +147,7 @@ fun DestinationCard(
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
+                        contentDescription = strings.details,
                         tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(14.dp)
                     )

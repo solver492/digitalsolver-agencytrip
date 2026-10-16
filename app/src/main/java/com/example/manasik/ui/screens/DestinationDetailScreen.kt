@@ -38,6 +38,7 @@ fun DestinationDetailScreen(
     onRequestQuote: (destination: String) -> Unit,
     onOpenTravelpayoutsWidget: (serviceSlug: String, destinationHint: String) -> Unit = { _, _ -> }
 ) {
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
     var selectedServiceSlug by remember(destination.slug) {
         mutableStateOf(destination.services.firstOrNull() ?: "vols")
     }
@@ -87,7 +88,7 @@ fun DestinationDetailScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Retour",
+                    contentDescription = strings.back,
                     tint = Color.White
                 )
             }
@@ -173,7 +174,7 @@ fun DestinationDetailScreen(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = "Meilleure période",
+                            text = strings.bestSeason,
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFFD4AF37)
@@ -191,7 +192,7 @@ fun DestinationDetailScreen(
 
             if (destination.highlights.isNotEmpty()) {
                 Text(
-                    text = "Les Incontournables",
+                    text = strings.highlights,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -225,7 +226,7 @@ fun DestinationDetailScreen(
 
             if (destination.tips.isNotEmpty()) {
                 Text(
-                    text = "Conseils aux voyageurs",
+                    text = strings.travelTips,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -258,13 +259,13 @@ fun DestinationDetailScreen(
             }
 
             Text(
-                text = "Réserver en direct pour ${destination.name}",
+                text = "${strings.bookDestination} : ${destination.name}",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Sélectionnez un service Travelpayouts ci-dessous pour comparer les offres",
+                text = strings.expressBookingSubtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -312,7 +313,7 @@ fun DestinationDetailScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Ouvrir le widget ${selectedServiceSlug.replaceFirstChar { it.uppercase() }} en grand",
+                    text = strings.openFullComparator,
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
@@ -336,7 +337,7 @@ fun DestinationDetailScreen(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "Demander un devis pour ${destination.name}",
+                    text = "${strings.requestQuoteForThis} (${destination.name})",
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF092E52)

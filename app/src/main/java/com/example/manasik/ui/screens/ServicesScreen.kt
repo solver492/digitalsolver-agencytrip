@@ -32,7 +32,9 @@ fun ServicesScreen(
     onOpenQuoteDialog: (destination: String, service: String) -> Unit,
     onOpenTravelpayoutsWidget: (serviceSlug: String, destinationHint: String) -> Unit = { _, _ -> }
 ) {
-    val services = remember { ServicesRepository.allServices }
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
+    val currentLanguage = com.example.manasik.data.i18n.LocalCurrentLanguage.current
+    val services = remember(currentLanguage) { ServicesRepository.getServices(currentLanguage) }
     var expandedWidgetSlug by remember { mutableStateOf<String?>("vols") }
     var showBulkImporter by remember { mutableStateOf(false) }
 
@@ -48,13 +50,13 @@ fun ServicesScreen(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Nos Services & Réservations",
+                    text = strings.servicesTitle,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Moteurs de recherche Travelpayouts en direct & devis sur mesure",
+                    text = strings.servicesSubtitle,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -65,7 +67,7 @@ fun ServicesScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Code,
-                    contentDescription = "Configurer scriptpay.md",
+                    contentDescription = strings.configureScripts,
                     tint = Color(0xFFD4AF37)
                 )
             }
@@ -145,7 +147,7 @@ fun ServicesScreen(
                             ) {
                                 Icon(
                                     imageVector = if (isWidgetExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                                    contentDescription = if (isWidgetExpanded) "Masquer le widget" else "Afficher le widget"
+                                    contentDescription = if (isWidgetExpanded) strings.hideComparator else strings.showComparator
                                 )
                             }
                         }
@@ -200,10 +202,11 @@ fun ServicesScreen(
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = "Comparateur Direct",
+                                    text = strings.directComparator,
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF092E52)
+                                    color = Color(0xFF092E52),
+                                    maxLines = 1
                                 )
                             }
 
@@ -215,10 +218,11 @@ fun ServicesScreen(
                                     .testTag("book_service_btn_${service.slug}")
                             ) {
                                 Text(
-                                    text = "Devis Agence",
+                                    text = strings.agencyQuote,
                                     style = MaterialTheme.typography.labelMedium,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Icon(

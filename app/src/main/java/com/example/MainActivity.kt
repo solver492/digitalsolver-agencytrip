@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -73,59 +74,57 @@ class MainActivity : ComponentActivity() {
                 activeTpDialogDestinationHint = destinationHint
             }
 
-            ManasikBaytTheme(darkTheme = isDarkTheme) {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    topBar = {
-                        if (selectedDestination == null) {
-                            AppTopBar(
-                                isDarkTheme = isDarkTheme,
-                                onToggleTheme = { isDarkTheme = !isDarkTheme },
-                                currentLanguage = currentLanguage,
-                                onSelectLanguage = { currentLanguage = it }
-                            )
-                        }
-                    },
+            val currentStrings = remember(currentLanguage) {
+                com.example.manasik.data.i18n.I18nManager.getStrings(currentLanguage)
+            }
+            val layoutDirection = remember(currentLanguage) {
+                com.example.manasik.data.i18n.I18nManager.getLayoutDirection(currentLanguage)
+            }
+
+            CompositionLocalProvider(
+                com.example.manasik.data.i18n.LocalAppStrings provides currentStrings,
+                androidx.compose.ui.platform.LocalLayoutDirection provides layoutDirection,
+                com.example.manasik.data.i18n.LocalCurrentLanguage provides currentLanguage
+            ) {
+                ManasikBaytTheme(darkTheme = isDarkTheme) {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        topBar = {
+                            if (selectedDestination == null) {
+                                AppTopBar(
+                                    isDarkTheme = isDarkTheme,
+                                    onToggleTheme = { isDarkTheme = !isDarkTheme },
+                                    currentLanguage = currentLanguage,
+                                    onSelectLanguage = { currentLanguage = it }
+                                )
+                            }
+                        },
                     bottomBar = {
                         if (selectedDestination == null) {
-                            NavigationBar(
-                                containerColor = MaterialTheme.colorScheme.surface,
-                                modifier = Modifier.testTag("main_bottom_nav")
-                            ) {
-                                MainNavigationTab.values().forEach { tab ->
-                                    NavigationBarItem(
-                                        selected = selectedTab == tab,
-                                        onClick = { selectedTab = tab },
-                                        icon = {
-                                            Icon(
-                                                imageVector = tab.icon,
-                                                contentDescription = tab.title
-                                            )
-                                        },
-                                        label = { Text(tab.title) },
-                                        modifier = Modifier.testTag("nav_${tab.name.lowercase()}")
-                                    )
-                                }
-                            }
+                            com.example.manasik.ui.components.ThreeDIconBottomNavBar(
+                                selectedTab = selectedTab,
+                                onTabSelected = { selectedTab = it },
+                                isDark = isDarkTheme
+                            )
                         }
                     },
                     floatingActionButton = {
                         if (selectedDestination == null) {
                             LiquidGlassButton(
-                                onClick = { openQuote("", "Devis Express") },
+                                onClick = { openQuote("", currentStrings.quote) },
                                 isGold = true,
                                 shape = RoundedCornerShape(percent = 50),
                                 modifier = Modifier.testTag("fab_quote")
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.Send,
-                                    contentDescription = null,
+                                    contentDescription = currentStrings.quote,
                                     tint = Color(0xFF092E52),
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "Devis",
+                                    currentStrings.quote,
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF092E52)
@@ -151,7 +150,34 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         } else {
-                            AnimatedContent(targetState = selectedTab, label = "tab_animation") { tab ->
+                            AnimatedContent(
+                                targetState = selectedTab,
+                                label = "tab_animation",
+                                transitionSpec = {
+                                    val forward = targetState.ordinal > initialState.ordinal
+                                    val enterSpec = slideInHorizontally(
+                                        animationSpec = spring(
+                                            dampingRatio = Spring.DampingRatioLowBouncy,
+                                            stiffness = Spring.StiffnessMediumLow
+                                        )
+                                    ) { width -> if (forward) width / 3 else -width / 3 } +
+                                    fadeIn(
+                                        animationSpec = tween(durationMillis = 280, easing = FastOutSlowInEasing)
+                                    )
+
+                                    val exitSpec = slideOutHorizontally(
+                                        animationSpec = spring(
+                                            dampingRatio = Spring.DampingRatioNoBouncy,
+                                            stiffness = Spring.StiffnessMediumLow
+                                        )
+                                    ) { width -> if (forward) -width / 3 else width / 3 } +
+                                    fadeOut(
+                                        animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                                    )
+
+                                    (enterSpec togetherWith exitSpec).using(SizeTransform(clip = false))
+                                }
+                            ) { tab ->
                                 when (tab) {
                                     MainNavigationTab.HOME -> HomeScreen(
                                         onNavigateToDestinations = { selectedTab = MainNavigationTab.DESTINATIONS },
@@ -207,4 +233,5 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
 }

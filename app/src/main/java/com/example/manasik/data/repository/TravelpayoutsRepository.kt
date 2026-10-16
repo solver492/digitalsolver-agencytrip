@@ -186,7 +186,8 @@ object TravelpayoutsRepository {
     fun buildWidgetHtml(
         config: TravelpayoutsWidgetConfig,
         destinationHint: String = "",
-        isDarkTheme: Boolean = false
+        isDarkTheme: Boolean = false,
+        languageCode: String = "FR"
     ): String {
         val bgHex = if (isDarkTheme) "#071E36" else "#F8FAFC"
         val cardHex = if (isDarkTheme) "#0E2A47" else "#FFFFFF"
@@ -195,36 +196,112 @@ object TravelpayoutsRepository {
         val inputBg = if (isDarkTheme) "#071E36" else "#F1F5F9"
         val inputBorder = if (isDarkTheme) "#1E4068" else "#CBD5E1"
 
+        val isRtl = languageCode.equals("AR", ignoreCase = true)
+        val htmlLang = languageCode.lowercase()
+        val htmlDir = if (isRtl) "rtl" else "ltr"
+
         // Ensure protocol-relative //tp.media URLs use https:// inside WebView
         // and remove invalid trs parameter that throws 400 'traffic_source is not valid'
+        // also remove 'async' attribute so script executes synchronously with document.currentScript bound
+        // and adapt locale parameter to match current user language
+        val targetLocale = when (languageCode.uppercase()) {
+            "AR" -> "ar"
+            "EN" -> "en"
+            "ES" -> "es"
+            else -> "fr"
+        }
+
         var normalizedScript = config.scriptSnippet
             .replace("src=\"//", "src=\"https://")
             .replace("src='//", "src='https://")
             .replace(Regex("""[?&]trs=[^&"']+"""), "")
             .replace("?&", "?")
+            .replace(Regex("""[?&]locale=[a-zA-Z-]+"""), "&locale=$targetLocale")
+            .replace(Regex("""\s+async(\s*=\s*["']?true["']?)?""", RegexOption.IGNORE_CASE), " ")
 
         val destBanner = if (destinationHint.isNotBlank()) {
             """<div class="dest-pill">📍 Destination : <strong>$destinationHint</strong></div>"""
         } else ""
 
-        val placeholderOrigin = "Paris (CDG/ORY)"
-        val placeholderDest = if (destinationHint.isNotBlank()) destinationHint else "Djeddah / Médine (JED)"
+        val placeholderOrigin = when (languageCode.uppercase()) {
+            "AR" -> "الدار البيضاء / باريس"
+            "EN" -> "London / Paris / New York"
+            "ES" -> "Madrid / Barcelona"
+            else -> "Paris (CDG/ORY)"
+        }
+        val placeholderDest = if (destinationHint.isNotBlank()) destinationHint else when (languageCode.uppercase()) {
+            "AR" -> "مكة المكرمة / المدينة المنورة"
+            "EN" -> "Jeddah / Madinah (JED)"
+            "ES" -> "Yeda / Medina (JED)"
+            else -> "Djeddah / Médine (JED)"
+        }
+
+        val labelOrigin = when (languageCode.uppercase()) {
+            "AR" -> "مدينة الانطلاق"
+            "EN" -> "Departure"
+            "ES" -> "Ciudad de Salida"
+            else -> "Départ"
+        }
+        val labelDest = when (languageCode.uppercase()) {
+            "AR" -> "الوصول / الوجهة"
+            "EN" -> "Arrival / Destination"
+            "ES" -> "Llegada / Destino"
+            else -> "Arrivée / Destination"
+        }
+        val searchBtnText = when (languageCode.uppercase()) {
+            "AR" -> "🔍 البحث في محرك المقارنة المباشر"
+            "EN" -> "🔍 Search on Live Comparator"
+            "ES" -> "🔍 Buscar en el comparador en vivo"
+            else -> "🔍 Lancer la recherche sur le comparateur"
+        }
+        val partnerLabel = when (languageCode.uppercase()) {
+            "AR" -> "الشريك المعتمد :"
+            "EN" -> "Partner:"
+            "ES" -> "Socio colaborador:"
+            else -> "Partenaire :"
+        }
+        val openPartnerText = when (languageCode.uppercase()) {
+            "AR" -> "فتح في موقع الشريك ↗"
+            "EN" -> "Open on partner site ↗"
+            "ES" -> "Abrir en portal asociado ↗"
+            else -> "Ouvrir sur le portail partenaire ↗"
+        }
 
         return """
             <!DOCTYPE html>
-            <html lang="fr">
+            <html lang="$htmlLang" dir="$htmlDir">
             <head>
                 <meta charset="UTF-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
                 <title>${config.title}</title>
+                <script>
+                    // Polyfill document.currentScript for WebView compatibility
+                    (function() {
+                        try {
+                            var origDesc = Object.getOwnPropertyDescriptor(Document.prototype, 'currentScript');
+                            Object.defineProperty(document, 'currentScript', {
+                                get: function() {
+                                    var el = origDesc && origDesc.get ? origDesc.get.call(document) : null;
+                                    if (el) return el;
+                                    return document.querySelector('script[src*="tp.media"]') ||
+                                           document.querySelector('script[src*="content"]') ||
+                                           document.querySelector('script[src*="travelpayouts"]') ||
+                                           (document.scripts.length > 0 ? document.scripts[document.scripts.length - 1] : null);
+                                },
+                                configurable: true
+                            });
+                        } catch(e) { console.warn("currentScript polyfill error", e); }
+                    })();
+                </script>
                 <style>
                     * { box-sizing: border-box; }
                     body {
                         margin: 0;
-                        padding: 10px;
+                        padding: 8px;
                         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                         background-color: $bgHex;
                         color: $textHex;
+                        min-height: 100%;
                     }
                     .widget-shell {
                         background-color: $cardHex;
@@ -232,7 +309,7 @@ object TravelpayoutsRepository {
                         padding: 14px;
                         border: 1px solid rgba(212, 175, 55, 0.35);
                         box-shadow: 0 4px 18px rgba(0, 0, 0, 0.10);
-                        min-height: 220px;
+                        min-height: 380px;
                     }
                     .dest-pill {
                         display: inline-block;
@@ -330,23 +407,23 @@ object TravelpayoutsRepository {
                     <div id="tp-fallback-form" class="native-search-card">
                         <div class="form-grid">
                             <div class="form-field">
-                                <label>Départ</label>
+                                <label>$labelOrigin</label>
                                 <input type="text" id="origin-input" value="$placeholderOrigin" />
                             </div>
                             <div class="form-field">
-                                <label>Arrivée / Destination</label>
+                                <label>$labelDest</label>
                                 <input type="text" id="dest-input" value="$placeholderDest" />
                             </div>
                         </div>
                         <a id="btn-do-search" class="btn-search" href="${config.fallbackSearchUrl}" target="_blank" rel="noopener">
-                            🔍 Lancer la recherche sur le comparateur
+                            $searchBtnText
                         </a>
                     </div>
 
                     <div class="fallback-box">
-                        <span>Partenaire : <strong>${config.providerLabel}</strong></span>
+                        <span>$partnerLabel <strong>${config.providerLabel}</strong></span>
                         <a class="direct-link" href="${config.fallbackSearchUrl}" target="_blank" rel="noopener">
-                            Ouvrir sur le portail partenaire ↗
+                            $openPartnerText
                         </a>
                     </div>
                 </div>
