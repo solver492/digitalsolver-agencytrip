@@ -209,6 +209,7 @@ fun TravelpayoutsWidgetDialog(
     onOpenWhatsAppQuote: (destination: String, serviceTitle: String) -> Unit
 ) {
     val context = LocalContext.current
+    val strings = com.example.manasik.data.i18n.LocalAppStrings.current
     var currentSlug by remember { mutableStateOf(initialServiceSlug) }
     var showScriptEditor by remember { mutableStateOf(false) }
 
@@ -278,7 +279,7 @@ fun TravelpayoutsWidgetDialog(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Code,
-                                contentDescription = "Configurer scriptpay.md",
+                                contentDescription = strings.configureScripts,
                                 tint = Color(0xFFD4AF37)
                             )
                         }
@@ -288,7 +289,7 @@ fun TravelpayoutsWidgetDialog(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = "Fermer"
+                                contentDescription = strings.close
                             )
                         }
                     }

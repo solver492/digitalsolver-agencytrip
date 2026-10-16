@@ -54,12 +54,14 @@ fun HomeScreen(
     var activeTpTabSlug by remember { mutableStateOf("vols") }
     var showHomeLiveWidget by remember { mutableStateOf(false) }
 
-    val featuredDestinations = remember {
-        DestinationsRepository.allDestinations.filter { it.featured }
+    val currentLanguage = com.example.manasik.data.i18n.LocalCurrentLanguage.current
+
+    val featuredDestinations = remember(currentLanguage) {
+        DestinationsRepository.getDestinations(currentLanguage).filter { it.featured }
     }
-    val services = remember { ServicesRepository.allServices }
-    val featuredPackages = remember { PackagesRepository.allPackages.take(3) }
-    val testimonials = remember { TestimonialsRepository.allTestimonials }
+    val services = remember(currentLanguage) { ServicesRepository.getServices(currentLanguage) }
+    val featuredPackages = remember(currentLanguage) { PackagesRepository.getPackages(currentLanguage).take(3) }
+    val testimonials = remember(currentLanguage) { TestimonialsRepository.getTestimonials(currentLanguage) }
 
     Column(
         modifier = Modifier
@@ -160,12 +162,12 @@ fun HomeScreen(
 
                 // Quick Service Selector Tabs for Travelpayouts Scripts
                 val quickTabs = listOf(
-                    "vols" to "Vols",
-                    "hotels" to "Hôtels",
-                    "transferts" to "Transferts",
-                    "esim" to "eSIM",
-                    "location-voiture" to "Voitures",
-                    "activites" to "Activités"
+                    "vols" to strings.tabFlights,
+                    "hotels" to strings.tabHotels,
+                    "transferts" to strings.tabTransfers,
+                    "esim" to strings.tabEsim,
+                    "location-voiture" to strings.tabCars,
+                    "activites" to strings.tabActivities
                 )
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -203,7 +205,7 @@ fun HomeScreen(
                     value = searchDestination,
                     onValueChange = { searchDestination = it },
                     label = { Text(strings.destinationSearchPlaceholder) },
-                    placeholder = { Text("La Mecque, Médine, Istanbul, Dubaï...") },
+                    placeholder = { Text(strings.destinationSearchPlaceholder) },
                     leadingIcon = {
                         Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color(0xFFD4AF37))
                     },
@@ -220,7 +222,7 @@ fun HomeScreen(
                     value = selectedDates,
                     onValueChange = { selectedDates = it },
                     label = { Text(strings.datesPlaceholder) },
-                    placeholder = { Text("Ex: Ramadan 2026, Novembre...") },
+                    placeholder = { Text(strings.datesPlaceholder) },
                     leadingIcon = {
                         Icon(Icons.Default.CalendarToday, contentDescription = null, tint = Color(0xFFD4AF37))
                     },

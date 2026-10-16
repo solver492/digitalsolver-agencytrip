@@ -2,6 +2,7 @@ package com.example.manasik.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.manasik.data.model.Destination
+import com.example.manasik.data.repository.DestinationsRepository
 import com.example.manasik.ui.components.AssetImage
 import com.example.manasik.ui.components.LiquidGlassBadge
 import com.example.manasik.ui.components.LiquidGlassButton
@@ -36,12 +38,15 @@ fun DestinationDetailScreen(
     destination: Destination,
     onBack: () -> Unit,
     onRequestQuote: (destination: String) -> Unit,
-    onOpenTravelpayoutsWidget: (serviceSlug: String, destinationHint: String) -> Unit = { _, _ -> }
+    onOpenTravelpayoutsWidget: (serviceSlug: String, destinationHint: String) -> Unit = { _, _ -> },
+    onSelectLanguage: (String) -> Unit = {}
 ) {
     val strings = com.example.manasik.data.i18n.LocalAppStrings.current
+    val currentLanguage = com.example.manasik.data.i18n.LocalCurrentLanguage.current
     var selectedServiceSlug by remember(destination.slug) {
         mutableStateOf(destination.services.firstOrNull() ?: "vols")
     }
+    var showLangMenu by remember { mutableStateOf(false) }
 
     BackHandler {
         onBack()
@@ -69,9 +74,9 @@ fun DestinationDetailScreen(
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                Color.Black.copy(alpha = 0.45f),
+                                Color.Black.copy(alpha = 0.50f),
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.85f)
+                                Color.Black.copy(alpha = 0.88f)
                             )
                         )
                     )
@@ -83,7 +88,7 @@ fun DestinationDetailScreen(
                     .padding(16.dp)
                     .align(Alignment.TopStart)
                     .clip(CircleShape)
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(Color.Black.copy(alpha = 0.55f))
                     .testTag("destination_back_button")
             ) {
                 Icon(
@@ -93,29 +98,94 @@ fun DestinationDetailScreen(
                 )
             }
 
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+            // Top-right controls: Language Selector + Rating
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+                // Interactive Language Switcher for instant live translation on the detail screen
+                Box {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.90f),
+                        modifier = Modifier
+                            .clickable { showLangMenu = true }
+                            .testTag("detail_lang_switcher")
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp)
+                        ) {
+                            val flag = when (currentLanguage.uppercase()) {
+                                "EN" -> "🇬🇧 EN"
+                                "AR" -> "🇸🇦 ع"
+                                "ES" -> "🇪🇸 ES"
+                                else -> "🇫🇷 FR"
+                            }
+                            Text(
+                                text = flag,
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+
+                    DropdownMenu(
+                        expanded = showLangMenu,
+                        onDismissRequest = { showLangMenu = false }
+                    ) {
+                        val languages = listOf(
+                            Triple("FR", "Français", "🇫🇷"),
+                            Triple("EN", "English", "🇬🇧"),
+                            Triple("AR", "العربية", "🇸🇦"),
+                            Triple("ES", "Español", "🇪🇸")
+                        )
+                        languages.forEach { (code, name, flag) ->
+                            DropdownMenuItem(
+                                text = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(text = "$flag  $name", fontWeight = if (currentLanguage == code) FontWeight.Bold else FontWeight.Normal)
+                                        if (currentLanguage == code) {
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(text = "✓", color = Color(0xFFD4AF37), fontWeight = FontWeight.Bold)
+                                        }
+                                    }
+                                },
+                                onClick = {
+                                    onSelectLanguage(code)
+                                    showLangMenu = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.90f)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = Color(0xFFD4AF37),
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "${destination.rating}",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFD4AF37),
+                            modifier = Modifier.size(15.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "${destination.rating}",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
 
@@ -275,6 +345,7 @@ fun DestinationDetailScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 destination.services.forEach { serviceSlug ->
+                    val serviceLabel = DestinationsRepository.getServiceLabel(serviceSlug, currentLanguage)
                     FilterChip(
                         selected = selectedServiceSlug == serviceSlug,
                         onClick = { selectedServiceSlug = serviceSlug },
@@ -285,7 +356,7 @@ fun DestinationDetailScreen(
                                 modifier = Modifier.size(16.dp)
                             )
                         },
-                        label = { Text(serviceSlug.replaceFirstChar { it.uppercase() }) }
+                        label = { Text(serviceLabel) }
                     )
                 }
             }
@@ -348,4 +419,3 @@ fun DestinationDetailScreen(
         }
     }
 }
-

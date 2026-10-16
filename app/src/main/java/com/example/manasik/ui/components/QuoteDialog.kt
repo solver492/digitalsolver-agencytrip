@@ -87,8 +87,13 @@ fun QuoteDialog(
                         textColor = Color(0xFFD4AF37)
                     )
                     Spacer(modifier = Modifier.height(14.dp))
+                    val thankYouText = try {
+                        String.format(strings.quoteThankYou, quote.fullName)
+                    } catch (_: Exception) {
+                        "${strings.quoteThankYou} ${quote.fullName}"
+                    }
                     Text(
-                        text = "${strings.quoteThankYou} ${quote.fullName}.",
+                        text = thankYouText,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

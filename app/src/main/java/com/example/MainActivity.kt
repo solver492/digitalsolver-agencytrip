@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.manasik.data.model.Destination
+import com.example.manasik.data.repository.DestinationsRepository
 import com.example.manasik.ui.components.AppTopBar
 import com.example.manasik.ui.components.LiquidGlassButton
 import com.example.manasik.ui.components.QuoteDialog
@@ -55,7 +56,12 @@ class MainActivity : ComponentActivity() {
             var isDarkTheme by remember { mutableStateOf(systemDark) }
             var currentLanguage by remember { mutableStateOf("FR") }
             var selectedTab by remember { mutableStateOf(MainNavigationTab.HOME) }
-            var selectedDestination by remember { mutableStateOf<Destination?>(null) }
+            var selectedDestinationSlug by remember { mutableStateOf<String?>(null) }
+            val selectedDestination: Destination? = remember(selectedDestinationSlug, currentLanguage) {
+                selectedDestinationSlug?.let { slug ->
+                    DestinationsRepository.getDestinationBySlug(slug, currentLanguage)
+                }
+            }
 
             var isQuoteDialogOpen by remember { mutableStateOf(false) }
             var quoteInitialDestination by remember { mutableStateOf("") }
@@ -88,13 +94,13 @@ class MainActivity : ComponentActivity() {
                 com.example.manasik.data.i18n.LocalCurrentLanguage provides currentLanguage
             ) {
                 ManasikBaytTheme(darkTheme = isDarkTheme) {
-                    BackHandler(enabled = (selectedDestination == null && selectedTab != MainNavigationTab.HOME)) {
+                    BackHandler(enabled = (selectedDestinationSlug == null && selectedTab != MainNavigationTab.HOME)) {
                         selectedTab = MainNavigationTab.HOME
                     }
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {
-                            if (selectedDestination == null) {
+                            if (selectedDestinationSlug == null) {
                                 AppTopBar(
                                     isDarkTheme = isDarkTheme,
                                     onToggleTheme = { isDarkTheme = !isDarkTheme },
@@ -103,57 +109,58 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         },
-                    bottomBar = {
-                        if (selectedDestination == null) {
-                            com.example.manasik.ui.components.ThreeDIconBottomNavBar(
-                                selectedTab = selectedTab,
-                                onTabSelected = { selectedTab = it },
-                                isDark = isDarkTheme
-                            )
-                        }
-                    },
-                    floatingActionButton = {
-                        if (selectedDestination == null) {
-                            LiquidGlassButton(
-                                onClick = { openQuote("", currentStrings.quote) },
-                                isGold = true,
-                                shape = RoundedCornerShape(percent = 50),
-                                modifier = Modifier.testTag("fab_quote")
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.Send,
-                                    contentDescription = currentStrings.quote,
-                                    tint = Color(0xFF092E52),
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    currentStrings.quote,
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF092E52)
+                        bottomBar = {
+                            if (selectedDestinationSlug == null) {
+                                com.example.manasik.ui.components.ThreeDIconBottomNavBar(
+                                    selectedTab = selectedTab,
+                                    onTabSelected = { selectedTab = it },
+                                    isDark = isDarkTheme
                                 )
                             }
-                        }
-                    }
-                ) { innerPadding ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                    ) {
-                        if (selectedDestination != null) {
-                            DestinationDetailScreen(
-                                destination = selectedDestination!!,
-                                onBack = { selectedDestination = null },
-                                onRequestQuote = { destName ->
-                                    openQuote(destName, "Séjour destination")
-                                },
-                                onOpenTravelpayoutsWidget = { slug, destHint ->
-                                    openTravelpayoutsWidget(slug, destHint)
+                        },
+                        floatingActionButton = {
+                            if (selectedDestinationSlug == null) {
+                                LiquidGlassButton(
+                                    onClick = { openQuote("", currentStrings.quote) },
+                                    isGold = true,
+                                    shape = RoundedCornerShape(percent = 50),
+                                    modifier = Modifier.testTag("fab_quote")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.Send,
+                                        contentDescription = currentStrings.quote,
+                                        tint = Color(0xFF092E52),
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        currentStrings.quote,
+                                        style = MaterialTheme.typography.labelLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF092E52)
+                                    )
                                 }
-                            )
-                        } else {
+                            }
+                        }
+                    ) { innerPadding ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                        ) {
+                            if (selectedDestination != null) {
+                                DestinationDetailScreen(
+                                    destination = selectedDestination,
+                                    onBack = { selectedDestinationSlug = null },
+                                    onRequestQuote = { destName ->
+                                        openQuote(destName, currentStrings.quote)
+                                    },
+                                    onOpenTravelpayoutsWidget = { slug, destHint ->
+                                        openTravelpayoutsWidget(slug, destHint)
+                                    },
+                                    onSelectLanguage = { currentLanguage = it }
+                                )
+                            } else {
                             AnimatedContent(
                                 targetState = selectedTab,
                                 label = "tab_animation",
@@ -187,14 +194,14 @@ class MainActivity : ComponentActivity() {
                                         onNavigateToDestinations = { selectedTab = MainNavigationTab.DESTINATIONS },
                                         onNavigateToServices = { selectedTab = MainNavigationTab.SERVICES },
                                         onNavigateToPackages = { selectedTab = MainNavigationTab.PACKAGES },
-                                        onSelectDestination = { dest -> selectedDestination = dest },
+                                        onSelectDestination = { dest -> selectedDestinationSlug = dest.slug },
                                         onOpenQuoteDialog = { dest, serv -> openQuote(dest, serv) },
                                         onOpenTravelpayoutsWidget = { slug, destHint ->
                                             openTravelpayoutsWidget(slug, destHint)
                                         }
                                     )
                                     MainNavigationTab.DESTINATIONS -> DestinationsScreen(
-                                        onSelectDestination = { dest -> selectedDestination = dest },
+                                        onSelectDestination = { dest -> selectedDestinationSlug = dest.slug },
                                         onOpenQuoteDialog = { dest, serv -> openQuote(dest, serv) }
                                     )
                                     MainNavigationTab.SERVICES -> ServicesScreen(

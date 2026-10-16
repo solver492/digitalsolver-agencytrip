@@ -371,7 +371,7 @@ fun QuotesAndFaqScreen(
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Column {
-                                        Text("Service Client / Devis", style = MaterialTheme.typography.labelMedium)
+                                        Text(strings.customerServiceTitle, style = MaterialTheme.typography.labelMedium)
                                         Text("contact@manasiktravelagency.com", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                                     }
                                 }
@@ -391,7 +391,7 @@ fun QuotesAndFaqScreen(
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Column {
-                                        Text("Site officiel", style = MaterialTheme.typography.labelMedium)
+                                        Text(strings.officialWebsiteTitle, style = MaterialTheme.typography.labelMedium)
                                         Text("agency.manasiktravelagency.com", style = MaterialTheme.typography.bodyMedium)
                                     }
                                 }
@@ -406,14 +406,14 @@ fun QuotesAndFaqScreen(
                         ) {
                             Column(modifier = Modifier.padding(18.dp)) {
                                 Text(
-                                    text = "Horaires d'ouverture",
+                                    text = strings.openingHoursTitle,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
-                                Text("Lundi au Samedi : 09h00 - 19h00", style = MaterialTheme.typography.bodyMedium)
+                                Text(strings.openingHoursValue, style = MaterialTheme.typography.bodyMedium)
                                 Text(
-                                    "Assistance pèlerins & urgences sur place : 24h/24, 7j/7",
+                                    strings.pilgrimAssistance247,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = Color(0xFFD4AF37)
                                 )
