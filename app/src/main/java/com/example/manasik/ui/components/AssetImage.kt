@@ -47,11 +47,24 @@ fun AssetImage(
             val bitmap = withContext(Dispatchers.IO) {
                 try {
                     // Open asset stream and read full byte buffer (bulletproof across all OEM devices and compressed APKs)
-                    val inputStream = try {
-                        context.assets.open(cleanPath)
-                    } catch (e: Exception) {
-                        context.assets.open("images/$cleanPath")
+                    val candidates = listOf(
+                        cleanPath,
+                        "images/$cleanPath",
+                        cleanPath.removePrefix("images/"),
+                        "images/${cleanPath.removePrefix("images/")}",
+                        "images/destinations/${cleanPath.substringAfterLast("/")}"
+                    ).distinct()
+
+                    var inputStream: java.io.InputStream? = null
+                    for (candidate in candidates) {
+                        try {
+                            inputStream = context.assets.open(candidate)
+                            if (inputStream != null) break
+                        } catch (_: Exception) {
+                            // try next candidate
+                        }
                     }
+                    if (inputStream == null) return@withContext null
                     val bytes = inputStream.use { it.readBytes() }
 
                     // Determine dimensions

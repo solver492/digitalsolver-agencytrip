@@ -2,6 +2,7 @@ package com.example
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.*
@@ -87,6 +88,9 @@ class MainActivity : ComponentActivity() {
                 com.example.manasik.data.i18n.LocalCurrentLanguage provides currentLanguage
             ) {
                 ManasikBaytTheme(darkTheme = isDarkTheme) {
+                    BackHandler(enabled = (selectedDestination == null && selectedTab != MainNavigationTab.HOME)) {
+                        selectedTab = MainNavigationTab.HOME
+                    }
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
                         topBar = {

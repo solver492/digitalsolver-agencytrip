@@ -52,7 +52,7 @@ fun HomeScreen(
     var travelersCount by remember { mutableIntStateOf(2) }
     var selectedDates by remember { mutableStateOf("") }
     var activeTpTabSlug by remember { mutableStateOf("vols") }
-    var showHomeLiveWidget by remember { mutableStateOf(true) }
+    var showHomeLiveWidget by remember { mutableStateOf(false) }
 
     val featuredDestinations = remember {
         DestinationsRepository.allDestinations.filter { it.featured }

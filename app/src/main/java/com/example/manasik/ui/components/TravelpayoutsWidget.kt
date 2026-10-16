@@ -70,95 +70,111 @@ fun TravelpayoutsWidgetView(
             key(serviceSlug, reloadKey, isDarkTheme) {
                 AndroidView(
                     factory = { ctx ->
-                        WebView(ctx).apply {
-                            layoutParams = ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
-                            settings.apply {
-                                javaScriptEnabled = true
-                                domStorageEnabled = true
-                                databaseEnabled = true
-                                loadsImagesAutomatically = true
-                                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                                javaScriptCanOpenWindowsAutomatically = true
-                                setSupportMultipleWindows(false)
-                                allowFileAccess = true
-                                allowContentAccess = true
-                                useWideViewPort = true
-                                loadWithOverviewMode = true
-                                cacheMode = WebSettings.LOAD_DEFAULT
-                                userAgentString = "Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
-                            }
-                            val webViewInstance = this
-                            android.webkit.CookieManager.getInstance().apply {
-                                setAcceptCookie(true)
-                                setAcceptThirdPartyCookies(webViewInstance, true)
-                            }
-                            webChromeClient = WebChromeClient()
-                            webViewClient = object : WebViewClient() {
-                                override fun onPageFinished(view: WebView?, url: String?) {
-                                    super.onPageFinished(view, url)
-                                    isLoading = false
+                        try {
+                            WebView(ctx).apply {
+                                setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null)
+                                layoutParams = ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                                )
+                                settings.apply {
+                                    javaScriptEnabled = true
+                                    domStorageEnabled = true
+                                    databaseEnabled = true
+                                    loadsImagesAutomatically = true
+                                    mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                                    javaScriptCanOpenWindowsAutomatically = true
+                                    setSupportMultipleWindows(false)
+                                    allowFileAccess = true
+                                    allowContentAccess = true
+                                    useWideViewPort = true
+                                    loadWithOverviewMode = true
+                                    cacheMode = WebSettings.LOAD_DEFAULT
+                                    userAgentString = "Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
                                 }
-
-                                override fun onReceivedError(
-                                    view: WebView?,
-                                    request: WebResourceRequest?,
-                                    error: android.webkit.WebResourceError?
-                                ) {
-                                    super.onReceivedError(view, request, error)
-                                    if (request?.isForMainFrame == true) {
+                                val webViewInstance = this
+                                android.webkit.CookieManager.getInstance().apply {
+                                    setAcceptCookie(true)
+                                    setAcceptThirdPartyCookies(webViewInstance, true)
+                                }
+                                webChromeClient = WebChromeClient()
+                                webViewClient = object : WebViewClient() {
+                                    override fun onPageFinished(view: WebView?, url: String?) {
+                                        super.onPageFinished(view, url)
                                         isLoading = false
                                     }
-                                }
 
-                                override fun shouldOverrideUrlLoading(
-                                    view: WebView?,
-                                    request: WebResourceRequest?
-                                ): Boolean {
-                                    val targetUri = request?.url ?: return false
-                                    val urlString = targetUri.toString()
-                                    val host = targetUri.host?.lowercase() ?: ""
-
-                                    // Let internal Travelpayouts scripts, cascoon components, CDN, and iframe assets load within WebView
-                                    if (host.contains("tp.media") ||
-                                        host.contains("travelpayouts.com") ||
-                                        host.contains("wway.io") ||
-                                        host.contains("apistp.com") ||
-                                        host.contains("manasiktravelagency.com") ||
-                                        urlString.startsWith("data:") ||
-                                        urlString.startsWith("about:")
+                                    override fun onReceivedError(
+                                        view: WebView?,
+                                        request: WebResourceRequest?,
+                                        error: android.webkit.WebResourceError?
                                     ) {
-                                        return false
-                                    }
-
-                                    // Only open external browser if user actively clicked a link
-                                    val hasGesture = request.hasGesture()
-                                    if (!hasGesture) {
-                                        return false
-                                    }
-
-                                    // Open external booking results in the user's browser
-                                    return try {
-                                        val intent = Intent(Intent.ACTION_VIEW, targetUri).apply {
-                                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                        super.onReceivedError(view, request, error)
+                                        if (request?.isForMainFrame == true) {
+                                            isLoading = false
                                         }
-                                        context.startActivity(intent)
-                                        true
-                                    } catch (e: Exception) {
-                                        false
+                                    }
+
+                                    override fun shouldOverrideUrlLoading(
+                                        view: WebView?,
+                                        request: WebResourceRequest?
+                                    ): Boolean {
+                                        val targetUri = request?.url ?: return false
+                                        val urlString = targetUri.toString()
+                                        val host = targetUri.host?.lowercase() ?: ""
+
+                                        // Let internal Travelpayouts scripts, cascoon components, CDN, and iframe assets load within WebView
+                                        if (host.contains("tp.media") ||
+                                            host.contains("travelpayouts.com") ||
+                                            host.contains("wway.io") ||
+                                            host.contains("apistp.com") ||
+                                            host.contains("manasiktravelagency.com") ||
+                                            urlString.startsWith("data:") ||
+                                            urlString.startsWith("about:")
+                                        ) {
+                                            return false
+                                        }
+
+                                        // Only open external browser if user actively clicked a link
+                                        val hasGesture = request.hasGesture()
+                                        if (!hasGesture) {
+                                            return false
+                                        }
+
+                                        // Open external booking results in the user's browser
+                                        return try {
+                                            val intent = Intent(Intent.ACTION_VIEW, targetUri).apply {
+                                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                            }
+                                            context.startActivity(intent)
+                                            true
+                                        } catch (e: Exception) {
+                                            false
+                                        }
                                     }
                                 }
+                                loadDataWithBaseURL(
+                                    "https://manasiktravelagency.com/",
+                                    htmlContent,
+                                    "text/html",
+                                    "UTF-8",
+                                    null
+                                )
                             }
-                            loadDataWithBaseURL(
-                                "https://manasiktravelagency.com/",
-                                htmlContent,
-                                "text/html",
-                                "UTF-8",
-                                null
-                            )
+                        } catch (t: Throwable) {
+                            android.widget.TextView(ctx).apply {
+                                text = ""
+                            }
                         }
+                    },
+                    onRelease = { view ->
+                        try {
+                            if (view is WebView) {
+                                view.stopLoading()
+                                view.webChromeClient = null
+                                view.destroy()
+                            }
+                        } catch (_: Exception) {}
                     },
                     modifier = Modifier
                         .fillMaxWidth()
